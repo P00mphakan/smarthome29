@@ -1,0 +1,59 @@
+const {
+  controlDevice,
+  sendTvKey,
+  triggerScene,
+  getAllStatus
+} = require('./_shared');
+
+module.exports = async (req, res) => {
+  // CORS Headers
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  try {
+    const input = req.body || {};
+    const action = input.action || (req.query && req.query.action);
+
+    // 1. Get Status (Sync all devices)
+    if (action === 'get_status') {
+      const statusMap = await getAllStatus();
+      return res.status(200).json({ success: true, type: 'status_sync', data: statusMap });
+    }
+
+    // 2. TV Key
+    if (action === 'tv_key' && input.key) {
+      const result = await sendTvKey(input.key);
+      return res.status(200).json(result);
+    }
+
+    // 3. Trigger Scene
+    if (action === 'trigger_scene' && input.scene_id) {
+      const result = await triggerScene(input.scene_id, input.scene_name || '');
+      return res.status(200).json(result);
+    }
+
+    // 4. Device Toggle / Direct State Control
+    if (input.device) {
+      const result = await controlDevice(input.device, input.state);
+      return res.status(200).json(result);
+    }
+
+    // 5. CCTV PTZ Action
+    if (action === 'cctv_ptz') {
+      return res.status(200).json({ success: true, action: 'cctv_ptz', camera: input.camera, direction: input.direction });
+    }
+
+    return res.status(400).json({ success: false, error: 'Invalid command or missing device/action' });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message || 'Internal Server Error' });
+  }
+};

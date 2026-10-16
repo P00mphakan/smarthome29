@@ -1,0 +1,3106 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#070c18">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta name="referrer" content="no-referrer">
+  <title>Smart Home 2/9 - AI Smart Living</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* ========================================================
+       1. MODERN GLASSMORPHISM DESIGN SYSTEM (Matching Image 1 & 2)
+       ======================================================== */
+    :root {
+      --bg-dark: #070c18;
+      --bg-gradient: radial-gradient(circle at 50% 0%, #152747 0%, #0a1122 45%, #050811 100%);
+      --glass-panel: rgba(18, 28, 48, 0.65);
+      --glass-card: rgba(22, 34, 58, 0.55);
+      --glass-card-hover: rgba(30, 46, 78, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border-glow: rgba(0, 210, 255, 0.35);
+      
+      --accent-cyan: #00d2ff;
+      --accent-blue: #3a7bd5;
+      --accent-emerald: #10b981;
+      --accent-emerald-glow: rgba(16, 185, 129, 0.3);
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-purple: #8b5cf6;
+      
+      --text-white: #f8fafc;
+      --text-muted: #8e9bb0;
+      --text-dim: #64748b;
+      
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+      
+      --dock-height: 72px;
+      --header-height: 58px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      -webkit-touch-callout: none !important;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      max-height: 100dvh;
+      overflow: hidden;
+      font-family: 'Plus Jakarta Sans', 'Prompt', sans-serif;
+      background: var(--bg-dark);
+      background-image: var(--bg-gradient);
+      color: var(--text-white);
+      position: relative;
+    }
+
+    /* Ambient Glow Background Lighting (Inspired by Image 1) */
+    .ambient-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.28;
+    }
+    .glow-1 { width: 550px; height: 550px; background: #0084ff; top: -150px; left: 10%; }
+    .glow-2 { width: 600px; height: 600px; background: #00d2ff; bottom: -200px; right: 5%; opacity: 0.18; }
+    .glow-3 { width: 400px; height: 400px; background: #8b5cf6; top: 30%; right: 25%; opacity: 0.12; }
+
+    /* Main App Viewport (100dvh, No Scroll) */
+    .app-viewport {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 14px 24px calc(var(--dock-height) + 16px) 24px;
+      max-width: 1560px;
+      margin: 0 auto;
+    }
+
+    /* ========================================================
+       2. TOP HEADER BAR
+       ======================================================== */
+    .top-header {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      width: 42px !important;
+      height: 42px !important;
+      min-width: 42px !important;
+      min-height: 42px !important;
+      max-width: 42px !important;
+      max-height: 42px !important;
+      aspect-ratio: 1 / 1 !important;
+      border-radius: 50% !important;
+      flex-shrink: 0 !important;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glass-border);
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      color: var(--text-muted);
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      transition: all 0.25s ease;
+    }
+    .icon-btn:hover, .icon-btn:active {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text-white);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .app-brand {
+      display: flex;
+      flex-direction: column;
+    }
+    .app-brand h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .app-brand span {
+      font-size: 0.76rem;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.28);
+      color: #34d399;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 30px;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseGreen 2s infinite;
+    }
+    @keyframes pulseGreen {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* ========================================================
+       3. TAB CONTENT VIEWS (Dock Views)
+       ======================================================== */
+    .tab-view {
+      display: none;
+      width: 100%;
+      flex: 1;
+      min-height: 0; /* Prevents overflow */
+      opacity: 0;
+      transform: scale(0.99);
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .tab-view.active {
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* --------------------------------------------------------
+       DOCK 1: HOME VIEW (Dashboard)
+       -------------------------------------------------------- */
+    .home-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      grid-template-rows: auto 1fr;
+      gap: 16px;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+    }
+
+    /* Left Column: Weather + Voice AI */
+    .home-left-col {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    /* Weather Widget Card (Exact Style of Image 1) */
+    .card-weather {
+      background: var(--glass-panel);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 180px;
+    }
+    .weather-clock-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .digital-clock {
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: #ffffff;
+      font-feature-settings: "tnum";
+    }
+    .thai-date {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .weather-badge-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .weather-3d-icon {
+      width: 58px;
+      height: 58px;
+      filter: drop-shadow(0 8px 16px rgba(0, 210, 255, 0.35));
+      animation: floatWeather 4s ease-in-out infinite;
+    }
+    @keyframes floatWeather {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .weather-temp-num {
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .weather-condition-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: right;
+      font-weight: 500;
+    }
+
+    .weather-details-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .weather-sub-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .weather-sub-item i { width: 14px; height: 14px; color: var(--accent-cyan); }
+
+    /* Voice Wave Card (Smooth Audio Waveform & Speech Feedback) */
+    .card-voice {
+      background: var(--glass-panel);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      min-height: 200px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    }
+    .voice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .voice-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-white);
+    }
+    .voice-title span {
+      background: linear-gradient(135deg, var(--accent-cyan), #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Waveform Container */
+    .voice-wave-container {
+      width: 100%;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 8px 0;
+    }
+    #voiceWaveCanvas {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-md);
+    }
+
+    .voice-status-label {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      text-align: center;
+      min-height: 20px;
+      line-height: 1.3;
+      transition: color 0.3s ease;
+    }
+    .voice-status-label.success {
+      color: #34d399;
+      font-weight: 600;
+    }
+    .voice-status-label.listening {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .voice-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 8px;
+    }
+    .mic-button {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1e3a8a, #0284c7);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.4);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    .mic-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(0, 210, 255, 0.55);
+    }
+    .mic-button.listening {
+      background: linear-gradient(135deg, #dc2626, #f43f5e);
+      box-shadow: 0 0 30px rgba(244, 63, 94, 0.65);
+      animation: micPulse 1.4s infinite;
+    }
+    @keyframes micPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    /* Right Column: Devices Grid */
+    .home-right-col {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .section-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-white);
+    }
+    .section-badge {
+      font-size: 0.74rem;
+      background: rgba(255, 255, 255, 0.07);
+      padding: 3px 10px;
+      border-radius: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Device Cards Container (Grid) */
+    .devices-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 12px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Individual Device Card (Entire Card Clickable!) */
+    .device-card {
+      background: var(--glass-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .device-card:hover {
+      background: var(--glass-card-hover);
+      border-color: rgba(255, 255, 255, 0.16);
+      transform: translateY(-2px);
+    }
+    .device-card:active {
+      transform: scale(0.98);
+    }
+
+    /* Active State (Glow Green/Cyan like Image 1) */
+    .device-card.active {
+      background: rgba(14, 40, 56, 0.7);
+      border-color: rgba(16, 185, 129, 0.45);
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.25), inset 0 0 15px rgba(16, 185, 129, 0.08);
+    }
+
+    .device-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .device-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      transition: all 0.25s ease;
+    }
+    .device-card.active .device-icon {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Toggle Switch Button (Inside Card) */
+    .toggle-switch {
+      width: 46px;
+      height: 26px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.12);
+      position: relative;
+      transition: background 0.25s ease;
+      pointer-events: auto;
+    }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+    .device-card.active .toggle-switch {
+      background: #10b981;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+    }
+    .device-card.active .toggle-switch::after {
+      transform: translateX(20px);
+    }
+
+    .device-bottom {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .device-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .device-desc {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .device-card.active .device-desc span.status-text {
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    /* Action button inside card (e.g. Remote button) */
+    .card-action-btn {
+      margin-top: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: var(--text-white);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .card-action-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    /* --------------------------------------------------------
+       DOCK 2: SCENES VIEW (All Smart Scenes)
+       -------------------------------------------------------- */
+    .scenes-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .scenes-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 14px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .scene-tile {
+      background: var(--glass-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .scene-tile:hover {
+      background: var(--glass-card-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+    }
+    .scene-tile:active {
+      transform: scale(0.97);
+    }
+    .scene-tile.triggered {
+      animation: sceneFlash 0.6s ease;
+    }
+    @keyframes sceneFlash {
+      0% { box-shadow: 0 0 0 rgba(0, 210, 255, 0.8); }
+      50% { box-shadow: 0 0 35px var(--accent-cyan); border-color: var(--accent-cyan); }
+      100% { box-shadow: 0 0 0 rgba(0, 210, 255, 0); }
+    }
+
+    .scene-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+    .scene-theme-green .scene-icon-wrap { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .scene-theme-red .scene-icon-wrap { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
+    .scene-theme-blue .scene-icon-wrap { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .scene-theme-purple .scene-icon-wrap { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+    .scene-theme-amber .scene-icon-wrap { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+    .scene-name-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 10px;
+    }
+    .scene-badge-sub {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* --------------------------------------------------------
+       DOCK 3: CCTV VIEW (Tapo C100 Cameras 2 ตัว)
+       -------------------------------------------------------- */
+    .cctv-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .camera-card {
+      background: var(--glass-panel);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .cam-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .cam-title-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cam-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #f87171;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .cam-badge.live .cam-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+      animation: pulseRed 1.8s infinite;
+    }
+    @keyframes pulseRed {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
+
+    /* Live Video Feed Container */
+    .cam-feed-box {
+      flex: 1;
+      background: #02040a;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+    .cam-feed-box img, .cam-feed-box canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* High-tech HUD Overlay */
+    .cam-hud-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 35%, transparent 65%, rgba(0,0,0,0.7) 100%);
+    }
+    .hud-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .hud-crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      border: 1px dashed rgba(0, 210, 255, 0.25);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hud-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+    .hud-motion-ok {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    .cam-controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 6px;
+      flex-shrink: 0;
+    }
+    .cam-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+    .cam-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glass-border);
+      color: var(--text-white);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .cam-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    
+    
+    /* 5-Day Weather Forecast Strip */
+    .weather-forecast-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 10px;
+      margin-top: 10px;
+      gap: 6px;
+    }
+    .forecast-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      flex: 1;
+      padding: 5px 3px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.2s ease;
+    }
+    .forecast-col:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+    .forecast-day-name {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .forecast-icon-box {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-cyan);
+      margin: 2px 0;
+    }
+    .forecast-icon-box svg, .forecast-icon-box i {
+      width: 16px;
+      height: 16px;
+    }
+    .forecast-temp-val {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .forecast-rain-prob {
+      font-size: 0.68rem;
+      color: #38bdf8;
+      font-weight: 500;
+    }
+
+    
+    /* CCTV PTZ & Audio Controls */
+    .cam-ptz-panel {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .cam-ptz-dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 26px);
+      grid-template-rows: repeat(3, 26px);
+      gap: 3px;
+    }
+    .ptz-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.7rem;
+      transition: all 0.15s ease;
+    }
+    .ptz-btn:hover { background: rgba(0, 210, 255, 0.3); border-color: var(--accent-cyan); }
+    .ptz-btn:active { background: var(--accent-cyan); color: #000; transform: scale(0.9); }
+    .ptz-up { grid-column: 2; grid-row: 1; }
+    .ptz-left { grid-column: 1; grid-row: 2; }
+    .ptz-center { grid-column: 2; grid-row: 2; font-size: 0.65rem; color: var(--accent-cyan); }
+    .ptz-right { grid-column: 3; grid-row: 2; }
+    .ptz-down { grid-column: 2; grid-row: 3; }
+
+    .cam-talk-btn {
+      background: rgba(59, 130, 246, 0.2) !important;
+      border-color: rgba(59, 130, 246, 0.4) !important;
+      color: #60a5fa !important;
+      font-weight: 600 !important;
+    }
+    .cam-talk-btn.talking {
+      background: rgba(239, 68, 68, 0.4) !important;
+      border-color: #ef4444 !important;
+      color: #fff !important;
+      animation: micPulse 1.2s infinite;
+    }
+
+    /* Dynamic Atmosphere Sky Canvas */
+    .sky-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.85;
+      transition: opacity 1.5s ease;
+    }
+
+    body {
+      transition: background 1.5s ease-in-out, background-image 1.5s ease-in-out !important;
+    }
+    .ambient-glow {
+      transition: background 1.5s ease-in-out, opacity 1.5s ease-in-out !important;
+    }
+
+    /* PM 2.5 Quality Badge */
+    .pm25-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .pm25-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      flex-shrink: 0;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    .pm25-level-tag {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* ========================================================
+       4. BOTTOM FLOATING DOCK (Exact Navigation from Image 1)
+       ======================================================== */
+    .dock-container {
+      position: fixed !important;
+      bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      margin: 0 auto !important;
+      height: var(--dock-height);
+      background: rgba(18, 28, 48, 0.82);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 40px;
+      padding: 6px 16px;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 10px;
+      z-index: 1000;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      width: auto !important;
+      max-width: calc(100vw - 32px) !important;
+    }
+
+    .dock-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 24px;
+      border-radius: 26px;
+      cursor: pointer;
+      color: var(--text-muted);
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      gap: 4px;
+    }
+    .dock-item i { width: 20px; height: 20px; transition: transform 0.25s ease; }
+    .dock-item span { font-size: 0.82rem; font-weight: 600; }
+
+    .dock-item:hover {
+      color: var(--text-white);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Active Dock Tab with Glowing Indicator */
+    .dock-item.active {
+      color: #ffffff;
+      background: rgba(0, 210, 255, 0.12);
+    }
+    .dock-item.active i {
+      color: var(--accent-cyan);
+      transform: translateY(-2px);
+    }
+    .dock-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      width: 24px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan);
+    }
+
+    /* ========================================================
+       5. STANDBY SCREEN (Lock Screen - Matching Image 2)
+       ======================================================== */
+    .standby-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background: #050812;
+      background-image: radial-gradient(circle at 50% 25%, #10223f 0%, #060b18 55%, #03050c 100%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 40px 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .standby-screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Locked indicator header */
+    .standby-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* Center Giant Clock & Weather */
+    .standby-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-top: -30px;
+    }
+    .standby-giant-clock {
+      font-size: 7.5rem;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: #ffffff;
+      font-feature-settings: "tnum";
+      text-shadow: 0 10px 40px rgba(0, 162, 255, 0.25);
+    }
+    .standby-thai-date {
+      font-size: 1.35rem;
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: 14px;
+      font-weight: 400;
+    }
+
+    .standby-weather-pill {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 28px;
+      padding: 10px 24px;
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+    }
+    .standby-weather-temp {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .standby-weather-desc {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Footer Tap to Wake */
+    .standby-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.9rem;
+      animation: bounceHint 2.5s infinite;
+    }
+    @keyframes bounceHint {
+      0%, 100% { transform: translateY(0); opacity: 0.45; }
+      50% { transform: translateY(-6px); opacity: 0.8; }
+    }
+
+    /* ========================================================
+       6. MODALS: TV & FAN REMOTE CONTROLS
+       ======================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(3, 7, 18, 0.75);
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .remote-card {
+      background: rgba(20, 30, 52, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .remote-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .remote-title { font-weight: 700; font-size: 1.1rem; }
+    .close-modal-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08); border: none; color: #fff;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .remote-grid-4 {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    }
+    .rem-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      color: #fff;
+      padding: 12px 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .rem-btn:hover { background: rgba(255, 255, 255, 0.15); }
+    .rem-btn:active, .rem-btn.active-key {
+      background: var(--accent-cyan) !important;
+      color: #050811 !important;
+      transform: scale(0.95);
+    }
+    .rem-power {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    /* Rocker & Dpad */
+    .remote-dpad-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+    }
+    .rocker-bar {
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      width: 52px;
+    }
+    .rocker-btn {
+      background: none; border: none; color: #fff;
+      padding: 12px 0; font-size: 1.1rem; font-weight: 700; cursor: pointer;
+    }
+    .rocker-btn:hover { background: rgba(255, 255, 255, 0.1); }
+    .rocker-btn:active { background: var(--accent-cyan); color: #000; }
+    .rocker-label { font-size: 0.7rem; color: var(--text-dim); text-align: center; }
+
+    .dpad-wheel {
+      width: 140px; height: 140px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    .dpad-dir {
+      position: absolute; background: none; border: none; color: #fff; font-size: 0.9rem;
+      cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+    }
+    .dpad-up { top: 4px; left: 48px; }
+    .dpad-down { bottom: 4px; left: 48px; }
+    .dpad-left { left: 4px; top: 48px; }
+    .dpad-right { right: 4px; top: 48px; }
+    .dpad-center {
+      position: absolute; top: 46px; left: 46px; width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12); border: none; color: #fff; font-weight: 700; cursor: pointer;
+    }
+    .dpad-center:active { background: var(--accent-cyan); color: #000; }
+
+    /* ========================================================
+       7. RESPONSIVE DESIGN (iPad/Tablet Landscape & Mobile Portrait)
+       ======================================================== */
+    /* Mobile Portrait (max-width: 820px) */
+    @media (max-width: 820px) {
+      body { overflow-y: auto; height: auto; min-height: 100dvh; }
+      .app-viewport { height: auto; min-height: 100dvh; padding-bottom: 95px; }
+      .home-grid { display: flex; flex-direction: column; height: auto; }
+      .home-left-col { width: 100%; height: auto; }
+      .digital-clock { font-size: 2.8rem; }
+      .devices-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; }
+      .scenes-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; }
+      .cctv-container { grid-template-columns: 1fr; height: auto; }
+      .camera-card { min-height: 280px; }
+      /* Header mobile perfect circle guarantee */
+      .top-header {
+        gap: 6px !important;
+        margin-bottom: 8px !important;
+      }
+      .header-left, .header-right {
+        gap: 6px !important;
+        flex-shrink: 0 !important;
+      }
+      .icon-btn {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        min-height: 38px !important;
+        max-width: 38px !important;
+        max-height: 38px !important;
+        aspect-ratio: 1 / 1 !important;
+        border-radius: 50% !important;
+        flex-shrink: 0 !important;
+      }
+      .status-pill {
+        padding: 5px 10px !important;
+        font-size: 0.7rem !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+      }
+      .app-brand h1 {
+        font-size: 1rem !important;
+      }
+      .app-brand span {
+        font-size: 0.68rem !important;
+      }
+
+      .dock-container {
+        position: fixed !important;
+        bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        margin: 0 auto !important;
+        width: auto !important;
+        max-width: 90vw !important;
+        padding: 6px 14px !important;
+        gap: 6px !important;
+      }
+      .dock-item {
+        padding: 6px 16px !important;
+        min-width: 68px !important;
+      }
+      .dock-item span {
+        font-size: 0.78rem !important;
+      }
+      .standby-giant-clock { font-size: 5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dynamic Atmosphere Canvas (Stars, Rain, Twilight) -->
+  <canvas id="skyCanvas" class="sky-canvas"></canvas>
+
+  <!-- Ambient Glow Backgrounds -->
+  <div class="ambient-glow glow-1" id="ambientGlow1"></div>
+  <div class="ambient-glow glow-2" id="ambientGlow2"></div>
+  <div class="ambient-glow glow-3" id="ambientGlow3"></div>
+
+  <!-- Main Viewport -->
+  <div class="app-viewport">
+    
+    <!-- Top Header Bar -->
+    <header class="top-header">
+      <div class="header-left">
+        <div class="icon-btn" onclick="triggerVoiceModal()" title="สั่งการด้วยเสียง">
+          <i data-lucide="mic"></i>
+        </div>
+        <div class="app-brand">
+          <h1>Smart Home 2/9</h1>
+          <span>AI Living Dashboard</span>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="status-pill" id="systemStatusPill">
+          <div class="pulse-dot"></div>
+          <span>ระบบออนไลน์</span>
+        </div>
+        <div class="icon-btn" onclick="syncAllStatus()" title="ซิงค์สถานะอุปกรณ์">
+          <i data-lucide="refresh-cw" id="syncIcon"></i>
+        </div>
+        <div class="icon-btn" onclick="enterStandbyMode()" title="เข้าสู่ Standby Mode">
+          <i data-lucide="moon"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========================================================
+         DOCK 1: HOME VIEW
+         ======================================================== -->
+    <main class="tab-view active" id="view-home">
+      <div class="home-grid">
+        
+        <!-- Left Column: Weather Widget + Siri Wave AI -->
+        <div class="home-left-col">
+          
+          <!-- Weather & Thai Date/Time Card (Image 1 Style) -->
+          <div class="card-weather">
+            <div class="weather-clock-row">
+              <div>
+                <div class="digital-clock" id="digitalClock">10:31</div>
+                <div class="thai-date" id="thaiDate">วันพฤหัสบดี, 16 ต.ค. 2567</div>
+              </div>
+              <div class="weather-badge-box">
+                <!-- Glowing 3D-Style Weather Cloud -->
+                <svg class="weather-3d-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M46 38C49.3137 38 52 35.3137 52 32C52 28.6863 49.3137 26 46 26C45.7335 26 45.4719 26.0174 45.2163 26.051C44.1166 20.893 39.5699 17 34.1 17C28.2458 17 23.4116 21.4395 22.7533 27.1402C22.0298 27.0478 21.2917 27 20.54 27C15.8236 27 12 30.8236 12 35.54C12 40.2564 15.8236 44.08 20.54 44.08H46C49.3137 44.08 52 41.3937 52 38.08C52 38.0532 51.9998 38.0266 51.9995 38H46Z" fill="url(#cloudGrad)"/>
+                  <path d="M24 48L20 54" stroke="#00d2ff" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M34 48L30 54" stroke="#00d2ff" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M44 48L40 54" stroke="#00d2ff" stroke-width="3" stroke-linecap="round"/>
+                  <defs>
+                    <linearGradient id="cloudGrad" x1="12" y1="17" x2="52" y2="44" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#80d0ff"/>
+                      <stop offset="1" stop-color="#2a5298"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="weather-temp-num" id="weatherTemp">24°C</div>
+                <div class="weather-condition-text" id="weatherDesc">ฟ้าโปร่ง</div>
+              </div>
+            </div>
+
+            <div class="weather-details-row" style="flex-wrap: wrap; gap: 10px;">
+              <div class="weather-sub-item">
+                <i data-lucide="wind"></i>
+                <span id="weatherWind">8 km/h</span>
+              </div>
+              <div class="weather-sub-item">
+                <i data-lucide="droplets"></i>
+                <span id="weatherHumidity">65%</span>
+              </div>
+              <div class="weather-sub-item pm25-pill" id="pm25Badge" title="ดัชนีคุณภาพอากาศ มช. (UNISERV CMU)">
+                <span class="pm25-dot" id="pm25Dot"></span>
+                <span id="pm25ValueText">PM 2.5: -- µg/m³</span>
+                <span class="pm25-level-tag" id="pm25LevelText">กำลังโหลด</span>
+              </div>
+            </div>
+
+            <!-- 5-Day Weather Forecast Strip -->
+            <div class="weather-forecast-strip" id="forecastStrip">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- AI Voice Smooth Wave Card -->
+          <div class="card-voice">
+            <div class="voice-header">
+              <div class="voice-title">
+                <i data-lucide="sparkles" style="color: var(--accent-cyan); width: 18px;"></i>
+                <span>AI Voice Assistant</span>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-dim);">Fast-Path 0.3s</span>
+            </div>
+
+            <!-- Waveform Canvas -->
+            <div class="voice-wave-container">
+              <canvas id="voiceWaveCanvas"></canvas>
+            </div>
+
+            <div class="voice-status-label" id="voiceStatusText">
+              แตะที่ปุ่มไมค์เพื่อสั่งการด้วยเสียง
+            </div>
+
+            <div class="voice-controls">
+              <button class="mic-button" id="micBtn" onclick="toggleSpeechRecording()">
+                <i data-lucide="mic" style="width: 24px; height: 24px;"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Device Cards Grid -->
+        <div class="home-right-col">
+          <div class="section-title-bar">
+            <div class="section-title">
+              <i data-lucide="cpu" style="width: 18px; color: var(--accent-cyan);"></i>
+              <span>อุปกรณ์ควบคุม (Smart Devices)</span>
+            </div>
+            <div class="section-badge">กดที่ตัวการ์ดเพื่อสั่งงานทันที</div>
+          </div>
+
+          <!-- 9 Device Cards (Both Card & Switch are Clickable) -->
+          <div class="devices-grid">
+            
+            <!-- 1. Bedroom -->
+            <div class="device-card" id="cardBedroom" onclick="handleCardClick('bedroom', event)">
+              <div class="device-top">
+                <div class="device-icon"><i data-lucide="bed"></i></div>
+                <div class="toggle-switch" onclick="handleSwitchClick('bedroom', event)"></div>
+              </div>
+              <div class="device-bottom">
+                <div class="device-name">ไฟห้องนอน</div>
+                <div class="device-desc"><span>Tuya Smart</span><span class="status-text" id="stateBedroom">ปิดอยู่</span></div>
+              </div>
+            </div>
+
+            <!-- 2. Kitchen -->
+            <div class="device-card" id="cardKitchen" onclick="handleCardClick('kitchen', event)">
+              <div class="device-top">
+                <div class="device-icon"><i data-lucide="utensils"></i></div>
+                <div class="toggle-switch" onclick="handleSwitchClick('kitchen', event)"></div>
+              </div>
+              <div class="device-bottom">
+                <div class="device-name">ไฟห้องครัว</div>
+                <div class="device-desc"><span>Tuya Smart</span><span class="status-text" id="stateKitchen">ปิดอยู่</span></div>
+              </div>
+            </div>
+
+            <!-- 3. Outdoor -->
+            <div class="device-card" id="cardOutdoor" onclick="handleCardClick('outdoor', event)">
+              <div class="device-top">
+                <div class="device-icon"><i data-lucide="trees"></i></div>
+                <div class="toggle-switch" onclick="handleSwitchClick('outdoor', event)"></div>
+              </div>
+              <div class="device-bottom">
+                <div class="device-name">ไฟนอกบ้าน</div>
+                <div class="device-desc"><span>Tuya Smart</span><span class="status-text" id="stateOutdoor">ปิดอยู่</span></div>
+              </div>
+            </div>
+
+            <!-- 4. Living Room (eWeLink) -->
+            <div class="device-card" id="cardLiving_room" onclick="handleCardClick('living_room', event)">
+              <div class="device-top">
+                <div class="device-icon"><i data-lucide="sofa"></i></div>
+                <div class="toggle-switch" onclick="handleSwitchClick('living_room', event)"></div>
+              </div>
+              <div class="device-bottom">
+                <div class="device-name">ไฟห้องนั่งเล่น</div>
+                <div class="device-desc"><span>eWeLink 2CH</span><span class="status-text" id="stateLiving_room">ปิดอยู่</span></div>
+              </div>
+            </div>
+
+            <!-- 5. Small Room (eWeLink) -->
+            <div class="device-card" id="cardSmall_room" onclick="handleCardClick('small_room', event)">
+              <div class="device-top">
+                <div class="device-icon"><i data-lucide="lamp"></i></div>
+                <div class="toggle-switch" onclick="handleSwitchClick('small_room', event)"></div>
+              </div>
+              <div class="device-bottom">
+                <div class="device-name">ไฟห้องเล็ก</div>
+                <div class="device-desc"><span>eWeLink CH2</span><span class="status-text" id="stateSmall_room">ปิดอยู่</span></div>
+              </div>
+            </div>
+
+            <!-- 6. TV 2/9 (LG on IR2/9) -->
+            <div class="device-card" id="cardTv" onclick="handleCardClick('tv', event)">
+              <div class="device-top">
+                <div class="device-icon"><i data-lucide="tv"></i></div>
+                <div class="toggle-switch" onclick="handleSwitchClick('tv', event)"></div>
+              </div>
+              <div class="device-bottom">
+                <div class="device-name">TV 2/9 (LG)</div>
+                <div class="device-desc">
+                  <span>IR2/9 Remote</span>
+                  <button class="card-action-btn" onclick="openRemoteModal('tv', event)">
+                    <i data-lucide="remote" style="width:12px;"></i> รีโมท
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. Fan Hatari (IR2/9) -->
+            <div class="device-card" id="cardFan" onclick="handleFanCardClick(event)">
+              <div class="device-top">
+                <div class="device-icon"><i data-lucide="fan"></i></div>
+                <div class="toggle-switch" onclick="handleFanSwitchClick(event)"></div>
+              </div>
+              <div class="device-bottom">
+                <div class="device-name">พัดลม Hatari</div>
+                <div class="device-desc">
+                  <span>IR2/9 Scene</span>
+                  <button class="card-action-btn" onclick="openRemoteModal('fan', event)">
+                    <i data-lucide="sliders" style="width:12px;"></i> สปีด
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 8. EV Meter Pro -->
+            <div class="device-card" id="cardEv_meter" onclick="handleCardClick('ev_meter', event)">
+              <div class="device-top">
+                <div class="device-icon"><i data-lucide="zap"></i></div>
+                <div class="toggle-switch" onclick="handleSwitchClick('ev_meter', event)"></div>
+              </div>
+              <div class="device-bottom">
+                <div class="device-name">ชาร์จรถ EV Pro</div>
+                <div class="device-desc"><span>Smart Meter</span><span class="status-text" id="stateEv_meter">ปิดอยู่</span></div>
+              </div>
+            </div>
+
+            <!-- 9. Door Switch RF 433 -->
+            <div class="device-card" id="cardDoor_switch" onclick="handleCardClick('door_switch', event)">
+              <div class="device-top">
+                <div class="device-icon"><i data-lucide="shield-check"></i></div>
+                <div class="toggle-switch" onclick="handleSwitchClick('door_switch', event)"></div>
+              </div>
+              <div class="device-bottom">
+                <div class="device-name">สวิตช์หน้าประตู</div>
+                <div class="device-desc"><span>RF 433 MHz</span><span class="status-text" id="stateDoor_switch">ปิดอยู่</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ========================================================
+         DOCK 2: SCENES VIEW (All Smart Scenes)
+         ======================================================== -->
+    <section class="tab-view" id="view-scenes">
+      <div class="scenes-container">
+        <div class="section-title-bar">
+          <div class="section-title">
+            <i data-lucide="sparkle" style="width: 18px; color: var(--accent-cyan);"></i>
+            <span>ซีนอัจฉริยะทั้งหมด (Smart Scenes)</span>
+          </div>
+          <div class="section-badge">แตะเพื่อสั่งงานทั้งระบบทันที</div>
+        </div>
+
+        <div class="scenes-grid">
+          
+          <!-- 1. Turn on all light -->
+          <div class="scene-tile scene-theme-green" onclick="triggerSceneDirect('tG2L8ZSn2LKMB5dA', 'เปิดไฟทั้งหมด', this)">
+            <div class="scene-icon-wrap"><i data-lucide="sun"></i></div>
+            <div>
+              <div class="scene-name-text">เปิดไฟทั้งหมด</div>
+              <div class="scene-badge-sub">Turn on all lights</div>
+            </div>
+          </div>
+
+          <!-- 2. Turn off all light -->
+          <div class="scene-tile scene-theme-red" onclick="triggerSceneDirect('bE4YctfyXMkwuYPM', 'ปิดไฟทั้งหมด', this)">
+            <div class="scene-icon-wrap"><i data-lucide="moon"></i></div>
+            <div>
+              <div class="scene-name-text">ปิดไฟทั้งหมด</div>
+              <div class="scene-badge-sub">Turn off all lights</div>
+            </div>
+          </div>
+
+          <!-- 3. Bedtime Scene -->
+          <div class="scene-tile scene-theme-purple" onclick="runBedtimeSceneDirect(this)">
+            <div class="scene-icon-wrap"><i data-lucide="bed-double"></i></div>
+            <div>
+              <div class="scene-name-text">โหมดเข้านอน</div>
+              <div class="scene-badge-sub">ปิดทุกดวง เปิดห้องนอน</div>
+            </div>
+          </div>
+
+          <!-- 4. Air Haier 25° -->
+          <div class="scene-tile scene-theme-blue" onclick="triggerSceneDirect('naAjHkYX5DYVp0m7', 'เปิดแอร์ Haier 25°', this)">
+            <div class="scene-icon-wrap"><i data-lucide="snowflake"></i></div>
+            <div>
+              <div class="scene-name-text">เปิดแอร์ Haier 25°</div>
+              <div class="scene-badge-sub">Smart Remote JBP</div>
+            </div>
+          </div>
+
+          <!-- 5. Air Haier 27° -->
+          <div class="scene-tile scene-theme-blue" onclick="triggerSceneDirect('XrRz80YEKHf3IQJa', 'ปรับแอร์ 27 องศา', this)">
+            <div class="scene-icon-wrap"><i data-lucide="thermometer"></i></div>
+            <div>
+              <div class="scene-name-text">ปรับแอร์ 27°C</div>
+              <div class="scene-badge-sub">โหมดประหยัดพลังงาน</div>
+            </div>
+          </div>
+
+          <!-- 6. Air Off -->
+          <div class="scene-tile scene-theme-red" onclick="triggerSceneDirect('0A8liR6N0ZeTkUPw', 'ปิดแอร์', this)">
+            <div class="scene-icon-wrap"><i data-lucide="power"></i></div>
+            <div>
+              <div class="scene-name-text">ปิดแอร์ (Haier)</div>
+              <div class="scene-badge-sub">Turn off AC</div>
+            </div>
+          </div>
+
+          <!-- 7. Fan On -->
+          <div class="scene-tile scene-theme-green" onclick="triggerSceneDirect('SXvpOX3pq6XmRBWO', 'เปิดพัดลม', this)">
+            <div class="scene-icon-wrap"><i data-lucide="fan"></i></div>
+            <div>
+              <div class="scene-name-text">เปิดพัดลม Hatari</div>
+              <div class="scene-badge-sub">IR2/9 Scene</div>
+            </div>
+          </div>
+
+          <!-- 8. Fan Off -->
+          <div class="scene-tile scene-theme-red" onclick="triggerSceneDirect('7hOnwT8sio3St18V', 'ปิดพัดลม', this)">
+            <div class="scene-icon-wrap"><i data-lucide="fan"></i></div>
+            <div>
+              <div class="scene-name-text">ปิดพัดลม Hatari</div>
+              <div class="scene-badge-sub">Turn off Fan</div>
+            </div>
+          </div>
+
+          <!-- 9. Fan Speed Up -->
+          <div class="scene-tile scene-theme-purple" onclick="triggerSceneDirect('7fM9org32gAw0Nh9', 'เพิ่มสปีดพัดลม', this)">
+            <div class="scene-icon-wrap"><i data-lucide="wind"></i></div>
+            <div>
+              <div class="scene-name-text">เพิ่มสปีดพัดลม</div>
+              <div class="scene-badge-sub">Cycle Speed 1-2-3</div>
+            </div>
+          </div>
+
+          <!-- 10. EV Charge -->
+          <div class="scene-tile scene-theme-amber" onclick="triggerSceneDirect('qT9UAVrv0RTgKUcH', 'ชาร์จแบตรถ', this)">
+            <div class="scene-icon-wrap"><i data-lucide="battery-charging"></i></div>
+            <div>
+              <div class="scene-name-text">ชาร์จแบตรถ EV</div>
+              <div class="scene-badge-sub">Start EV Charging</div>
+            </div>
+          </div>
+
+          <!-- 11. Outdoor Light On -->
+          <div class="scene-tile scene-theme-green" onclick="triggerSceneDirect('77n60735lR2fhihl', 'เปิดไฟนอกบ้าน', this)">
+            <div class="scene-icon-wrap"><i data-lucide="lightbulb"></i></div>
+            <div>
+              <div class="scene-name-text">เปิดไฟนอกบ้าน</div>
+              <div class="scene-badge-sub">Outdoor Lights On</div>
+            </div>
+          </div>
+
+          <!-- 12. Outdoor Light Off -->
+          <div class="scene-tile scene-theme-red" onclick="triggerSceneDirect('aPvQxxAAHrNW79aq', 'ปิดไฟนอกบ้าน', this)">
+            <div class="scene-icon-wrap"><i data-lucide="lightbulb-off"></i></div>
+            <div>
+              <div class="scene-name-text">ปิดไฟนอกบ้าน</div>
+              <div class="scene-badge-sub">Outdoor Lights Off</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         DOCK 3: CCTV VIEW (Tapo C100 2 ตัว)
+         ======================================================== -->
+    <section class="tab-view" id="view-cctv">
+      <div class="cctv-container">
+        
+        <!-- Camera 1: Tapo C100 Indoor -->
+        <div class="camera-card">
+          <div class="cam-header">
+            <div class="cam-title-box">
+              <i data-lucide="camera" style="color: var(--accent-cyan); width: 18px;"></i>
+              <div>
+                <strong style="font-size: 0.95rem;">กล้องในบ้าน (Indoor)</strong>
+                <div style="font-size: 0.72rem; color: var(--text-dim);">Tapo C100 • ห้องนั่งเล่น</div>
+              </div>
+            </div>
+            <div class="cam-badge live">
+              <div class="cam-dot"></div>
+              <span>LIVE 1080P</span>
+            </div>
+          </div>
+
+          <!-- Video Stream Container -->
+          <div class="cam-feed-box" id="camFeedIndoor">
+            <canvas id="camCanvasIndoor"></canvas>
+            <div class="cam-hud-overlay">
+              <div class="hud-top">
+                <span>CAM 01: INDOOR-LIVING</span>
+                <span id="camClockIndoor">23:15:42</span>
+              </div>
+              <div class="hud-crosshair"></div>
+              <div class="hud-bottom">
+                <div class="hud-motion-ok">
+                  <i data-lucide="shield-check" style="width: 14px;"></i>
+                  <span>ปกติ ไม่พบความเคลื่อนไหว</span>
+                </div>
+                <span>25 FPS • 1.9 Mbps</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cam-controls-bar" style="flex-wrap: wrap; gap: 8px;">
+            <!-- PTZ Pan/Tilt D-Pad -->
+            <div class="cam-ptz-panel" title="ควบคุมทิศทาง Pan / Tilt (Tapo C200/C210/ONVIF)">
+              <div class="cam-ptz-dpad">
+                <button class="ptz-btn ptz-up" onclick="sendPtzCommand('indoor', 'up')">▲</button>
+                <button class="ptz-btn ptz-left" onclick="sendPtzCommand('indoor', 'left')">◀</button>
+                <button class="ptz-btn ptz-center" onclick="sendPtzCommand('indoor', 'home')" title="กลับตำแหน่งกึ่งกลาง">●</button>
+                <button class="ptz-btn ptz-right" onclick="sendPtzCommand('indoor', 'right')">▶</button>
+                <button class="ptz-btn ptz-down" onclick="sendPtzCommand('indoor', 'down')">▼</button>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-dim); line-height: 1.2;">
+                <strong>Pan / Tilt</strong><br>หมุนกล้อง
+              </div>
+            </div>
+
+            <!-- Audio & Talk Controls -->
+            <div class="cam-btn-group">
+              <button class="cam-btn" id="btnAudioIndoor" onclick="toggleCamAudio('indoor')" title="เปิด/ปิดเสียงจากกล้อง">
+                <i data-lucide="volume-2" id="iconAudioIndoor" style="width: 14px;"></i> <span>ฟังเสียง</span>
+              </button>
+              <button class="cam-btn cam-talk-btn" id="btnTalkIndoor" onmousedown="startCamTalk('indoor')" onmouseup="stopCamTalk('indoor')" ontouchstart="startCamTalk('indoor')" ontouchend="stopCamTalk('indoor')" title="กดค้างไว้เพื่อพูดออกลำโพงกล้อง (Two-Way Talk)">
+                <i data-lucide="mic" style="width: 14px;"></i> <span>กดค้างเพื่อพูด</span>
+              </button>
+              <button class="cam-btn" onclick="openCamSettingsModal('indoor')" title="ตั้งค่าเชื่อมต่อกล้อง Tapo">
+                <i data-lucide="settings" style="width: 14px;"></i>
+              </button>
+              <button class="cam-btn" onclick="toggleCamFullscreen('indoor')" title="เต็มจอ">
+                <i data-lucide="maximize" style="width: 14px;"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Camera 2: Tapo C100 Outdoor -->
+        <div class="camera-card">
+          <div class="cam-header">
+            <div class="cam-title-box">
+              <i data-lucide="camera" style="color: var(--accent-cyan); width: 18px;"></i>
+              <div>
+                <strong style="font-size: 0.95rem;">กล้องนอกบ้าน (Outdoor)</strong>
+                <div style="font-size: 0.72rem; color: var(--text-dim);">Tapo C100 • โรงจอดรถ / หน้าบ้าน</div>
+              </div>
+            </div>
+            <div class="cam-badge live">
+              <div class="cam-dot"></div>
+              <span>LIVE 1080P</span>
+            </div>
+          </div>
+
+          <!-- Video Stream Container -->
+          <div class="cam-feed-box" id="camFeedOutdoor">
+            <canvas id="camCanvasOutdoor"></canvas>
+            <div class="cam-hud-overlay">
+              <div class="hud-top">
+                <span>CAM 02: OUTDOOR-GATE</span>
+                <span id="camClockOutdoor">23:15:42</span>
+              </div>
+              <div class="hud-crosshair"></div>
+              <div class="hud-bottom">
+                <div class="hud-motion-ok">
+                  <i data-lucide="shield-check" style="width: 14px;"></i>
+                  <span>ตรวจตราความปลอดภัย</span>
+                </div>
+                <span>25 FPS • 2.1 Mbps</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cam-controls-bar" style="flex-wrap: wrap; gap: 8px;">
+            <!-- PTZ Pan/Tilt D-Pad -->
+            <div class="cam-ptz-panel" title="ควบคุมทิศทาง Pan / Tilt (Tapo C200/C210/ONVIF)">
+              <div class="cam-ptz-dpad">
+                <button class="ptz-btn ptz-up" onclick="sendPtzCommand('outdoor', 'up')">▲</button>
+                <button class="ptz-btn ptz-left" onclick="sendPtzCommand('outdoor', 'left')">◀</button>
+                <button class="ptz-btn ptz-center" onclick="sendPtzCommand('outdoor', 'home')" title="กลับตำแหน่งกึ่งกลาง">●</button>
+                <button class="ptz-btn ptz-right" onclick="sendPtzCommand('outdoor', 'right')">▶</button>
+                <button class="ptz-btn ptz-down" onclick="sendPtzCommand('outdoor', 'down')">▼</button>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-dim); line-height: 1.2;">
+                <strong>Pan / Tilt</strong><br>หมุนกล้อง
+              </div>
+            </div>
+
+            <!-- Audio & Talk Controls -->
+            <div class="cam-btn-group">
+              <button class="cam-btn" id="btnAudioOutdoor" onclick="toggleCamAudio('outdoor')" title="เปิด/ปิดเสียงจากกล้อง">
+                <i data-lucide="volume-2" id="iconAudioOutdoor" style="width: 14px;"></i> <span>ฟังเสียง</span>
+              </button>
+              <button class="cam-btn cam-talk-btn" id="btnTalkOutdoor" onmousedown="startCamTalk('outdoor')" onmouseup="stopCamTalk('outdoor')" ontouchstart="startCamTalk('outdoor')" ontouchend="stopCamTalk('outdoor')" title="กดค้างไว้เพื่อพูดออกลำโพงกล้อง (Two-Way Talk)">
+                <i data-lucide="mic" style="width: 14px;"></i> <span>กดค้างเพื่อพูด</span>
+              </button>
+              <button class="cam-btn" onclick="openCamSettingsModal('outdoor')" title="ตั้งค่าเชื่อมต่อกล้อง Tapo">
+                <i data-lucide="settings" style="width: 14px;"></i>
+              </button>
+              <button class="cam-btn" onclick="toggleCamFullscreen('outdoor')" title="เต็มจอ">
+                <i data-lucide="maximize" style="width: 14px;"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /app-viewport -->
+
+  <!-- ========================================================
+       4. BOTTOM FLOATING DOCK (Navigation)
+       ======================================================== -->
+  <nav class="dock-container">
+    <div class="dock-item active" id="dock-home" onclick="switchDockTab('home')">
+      <i data-lucide="home"></i>
+      <span>Home</span>
+    </div>
+    <div class="dock-item" id="dock-scenes" onclick="switchDockTab('scenes')">
+      <i data-lucide="sparkles"></i>
+      <span>Scenes</span>
+    </div>
+    <div class="dock-item" id="dock-cctv" onclick="switchDockTab('cctv')">
+      <i data-lucide="video"></i>
+      <span>CCTV</span>
+    </div>
+  </nav>
+
+  <!-- ========================================================
+       5. STANDBY SCREEN (Matching Image 2 - 2 Min Auto Trigger)
+       ======================================================== -->
+  <div class="standby-screen" id="standbyScreen" onclick="wakeFromStandby()">
+    
+    <div class="standby-header">
+      <i data-lucide="lock" style="width: 16px;"></i>
+      <span>LOCKED</span>
+    </div>
+
+    <div class="standby-center">
+      <div class="standby-giant-clock" id="standbyClock">10:31</div>
+      <div class="standby-thai-date" id="standbyDate">วันพฤหัสบดี, 16 ต.ค. 2567</div>
+      
+      <div class="standby-weather-pill" style="gap: 14px;">
+        <svg style="width: 38px; height: 38px;" viewBox="0 0 64 64" fill="none">
+          <path d="M46 38C49.3137 38 52 35.3137 52 32C52 28.6863 49.3137 26 46 26C45.7335 26 45.4719 26.0174 45.2163 26.051C44.1166 20.893 39.5699 17 34.1 17C28.2458 17 23.4116 21.4395 22.7533 27.1402C22.0298 27.0478 21.2917 27 20.54 27C15.8236 27 12 30.8236 12 35.54C12 40.2564 15.8236 44.08 20.54 44.08H46C49.3137 44.08 52 41.3937 52 38.08C52 38.0532 51.9998 38.0266 51.9995 38H46Z" fill="url(#cloudGrad2)"/>
+          <path d="M26 48L22 54" stroke="#00d2ff" stroke-width="3" stroke-linecap="round"/>
+          <path d="M38 48L34 54" stroke="#00d2ff" stroke-width="3" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="cloudGrad2" x1="12" y1="17" x2="52" y2="44" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#80d0ff"/>
+              <stop offset="1" stop-color="#2a5298"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="standby-weather-temp" id="standbyTemp">24°C</div>
+        <div class="standby-weather-desc" id="standbyDesc">ฟ้าโปร่ง</div>
+        <div style="width: 1px; height: 26px; background: rgba(255,255,255,0.18);"></div>
+        <div style="display: flex; align-items: center; gap: 7px;">
+          <span class="pm25-dot" id="standbyPm25Dot"></span>
+          <span id="standbyPm25Text" style="font-size: 0.95rem; color: rgba(255,255,255,0.9); font-weight: 500;">PM 2.5: --</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="standby-footer">
+      <i data-lucide="chevron-up" style="width: 20px;"></i>
+      <span>แตะที่หน้าจอ 1 ครั้งเพื่อปลดล็อค (Tap to Wake)</span>
+    </div>
+
+  </div>
+
+  <!-- ========================================================
+       6. TV & FAN REMOTE MODALS
+       ======================================================== -->
+  <!-- TV Remote Modal -->
+  <div class="modal-overlay" id="modalTvRemote" onclick="if(event.target===this)closeRemoteModal('tv')">
+    <div class="remote-card">
+      <div class="remote-header">
+        <div class="remote-title">รีโมท TV 2/9 (LG)</div>
+        <button class="close-modal-btn" onclick="closeRemoteModal('tv')">✕</button>
+      </div>
+
+      <div class="remote-grid-4">
+        <button class="rem-btn rem-power" onclick="sendTvKeyDirect('Power', this)">
+          <i data-lucide="power" style="width:16px;"></i> Power
+        </button>
+        <button class="rem-btn" onclick="sendTvKeyDirect('Home', this)">
+          <i data-lucide="home" style="width:16px;"></i> Home
+        </button>
+        <button class="rem-btn" onclick="sendTvKeyDirect('Menu', this)">
+          <i data-lucide="menu" style="width:16px;"></i> Menu
+        </button>
+        <button class="rem-btn" onclick="sendTvKeyDirect('Back', this)">
+          <i data-lucide="arrow-left" style="width:16px;"></i> Back
+        </button>
+      </div>
+
+      <div class="remote-dpad-row">
+        <!-- Vol Rocker -->
+        <div class="rocker-bar">
+          <button class="rocker-btn" onclick="sendTvKeyDirect('Volume+', this)">+</button>
+          <div class="rocker-label">VOL</div>
+          <button class="rocker-btn" onclick="sendTvKeyDirect('Volume-', this)">-</button>
+        </div>
+
+        <!-- D-Pad Wheel -->
+        <div class="dpad-wheel">
+          <button class="dpad-dir dpad-up" onclick="sendTvKeyDirect('Up', this)">▲</button>
+          <button class="dpad-dir dpad-down" onclick="sendTvKeyDirect('Down', this)">▼</button>
+          <button class="dpad-dir dpad-left" onclick="sendTvKeyDirect('Left', this)">◀</button>
+          <button class="dpad-dir dpad-right" onclick="sendTvKeyDirect('Right', this)">▶</button>
+          <button class="dpad-center" onclick="sendTvKeyDirect('OK', this)">OK</button>
+        </div>
+
+        <!-- Channel Rocker -->
+        <div class="rocker-bar">
+          <button class="rocker-btn" onclick="sendTvKeyDirect('Channel+', this)">+</button>
+          <div class="rocker-label">CH</div>
+          <button class="rocker-btn" onclick="sendTvKeyDirect('Channel-', this)">-</button>
+        </div>
+      </div>
+
+      <div class="remote-grid-4">
+        <button class="rem-btn" onclick="sendTvKeyDirect('Mute', this)">
+          <i data-lucide="volume-x" style="width:16px;"></i> ปิดเสียง
+        </button>
+        <button class="rem-btn" onclick="sendTvKeyDirect('1', this)">1</button>
+        <button class="rem-btn" onclick="sendTvKeyDirect('2', this)">2</button>
+        <button class="rem-btn" onclick="sendTvKeyDirect('3', this)">3</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fan Remote Modal -->
+  <div class="modal-overlay" id="modalFanRemote" onclick="if(event.target===this)closeRemoteModal('fan')">
+    <div class="remote-card">
+      <div class="remote-header">
+        <div class="remote-title">รีโมทพัดลม Hatari</div>
+        <button class="close-modal-btn" onclick="closeRemoteModal('fan')">✕</button>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="rem-btn rem-power" style="flex: 1;" onclick="triggerSceneDirect('7hOnwT8sio3St18V', 'ปิดพัดลม', this)">
+          <i data-lucide="power" style="width:18px;"></i> ปิดพัดลม (Off)
+        </button>
+        <button class="rem-btn" style="flex: 1; color:#34d399; border-color: rgba(16,185,129,0.3);" onclick="triggerSceneDirect('SXvpOX3pq6XmRBWO', 'เปิดพัดลม', this)">
+          <i data-lucide="fan" style="width:18px;"></i> เปิดพัดลม (On)
+        </button>
+      </div>
+
+      <button class="rem-btn" style="padding: 24px; font-size: 1.1rem; background: rgba(139,92,246,0.15); border-color: rgba(139,92,246,0.3);" onclick="triggerSceneDirect('7fM9org32gAw0Nh9', 'เพิ่มสปีดพัดลม', this)">
+        <i data-lucide="wind" style="width: 28px; height: 28px; color: #a78bfa;"></i>
+        <span>เพิ่มสปีดพัดลม (Speed 1-2-3)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       7. JAVASCRIPT: LOGIC, ANIMATION & ZERO LATENCY BACKEND
+       ======================================================== -->
+  <script>
+    // ----------------------------------------------------
+    // SECURITY & ANTI-INSPECT HARDENING (Preserved 100%)
+    // ----------------------------------------------------
+    (function preventInspectAndTokens() {
+      document.addEventListener('contextmenu', e => e.preventDefault());
+      document.addEventListener('keydown', e => {
+        if (
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+          (e.metaKey && e.altKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+          (e.ctrlKey && ['U', 'S'].includes(e.key.toUpperCase())) ||
+          (e.metaKey && ['U', 'S'].includes(e.key.toUpperCase()))
+        ) {
+          e.preventDefault();
+          return false;
+        }
+      });
+      console.log = console.warn = console.error = console.info = console.debug = () => {};
+      setInterval(() => { try { Function('debugger')(); } catch(e){} }, 250);
+    })();
+
+    // ----------------------------------------------------
+    // API ENDPOINTS (Vercel Serverless Function 100-300ms)
+    // ----------------------------------------------------
+    const API_BASE = window.location.protocol.startsWith('http') ? '' : 'https://home29.vercel.app';
+    const API_CONTROL = API_BASE + '/api/control';
+    const API_VOICE = API_BASE + '/api/voice';
+
+    // State Tracking
+    const states = {
+      bedroom: false, kitchen: false, outdoor: false,
+      living_room: false, small_room: false, tv: false,
+      fan: false, ev_meter: false, door_switch: false
+    };
+
+    // ----------------------------------------------------
+    // 1. DATE, CLOCK & WEATHER (Thai Format)
+    // ----------------------------------------------------
+    const THAI_DAYS = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+    const THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+    const THAI_MONTHS_LONG = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+    function updateThaiClock() {
+      const now = new Date();
+      const hrs = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const timeStr = `${hrs}:${mins}`;
+
+      const dayName = THAI_DAYS[now.getDay()];
+      const dateNum = now.getDate();
+      const monthShort = THAI_MONTHS_SHORT[now.getMonth()];
+      const monthLong = THAI_MONTHS_LONG[now.getMonth()];
+      const yearBE = now.getFullYear() + 543;
+
+      // Update Home Card
+      const dClock = document.getElementById('digitalClock');
+      if (dClock) dClock.textContent = timeStr;
+      const tDate = document.getElementById('thaiDate');
+      if (tDate) tDate.textContent = `วัน${dayName}, ${dateNum} ${monthShort} ${yearBE}`;
+
+      // Update Standby Screen
+      const sClock = document.getElementById('standbyClock');
+      if (sClock) sClock.textContent = timeStr;
+      const sDate = document.getElementById('standbyDate');
+      if (sDate) sDate.textContent = `วัน${dayName}, ${dateNum} ${monthLong} ${yearBE}`;
+
+      // Update CCTV HUD Clocks
+      const c1 = document.getElementById('camClockIndoor');
+      const c2 = document.getElementById('camClockOutdoor');
+      const secs = String(now.getSeconds()).padStart(2, '0');
+      const camTime = `${hrs}:${mins}:${secs}`;
+      if (c1) c1.textContent = camTime;
+      if (c2) c2.textContent = camTime;
+    }
+    setInterval(updateThaiClock, 1000);
+    updateThaiClock();
+
+    // ----------------------------------------------------
+    // DYNAMIC ATMOSPHERE & PM 2.5 SYSTEM
+    // ----------------------------------------------------
+    let currentWeatherCode = 0;
+    let currentPm25 = 0;
+    let atmosphereMode = 'night'; // 'dawn', 'morning', 'afternoon', 'sunset', 'dusk', 'midnight', 'rain', 'smog', 'overcast'
+
+    // WAQI API Chiang Mai (Station A403297 - UNISERV CMU)
+    const WAQI_URL = 'https://api.waqi.info/feed/A403297/?token=2809fab30637792b268e791a57c6d6331b92e3d0';
+
+    async function fetchAirQuality() {
+      try {
+        const res = await fetch(WAQI_URL);
+        const json = await res.json();
+        if (json && json.status === 'ok' && json.data) {
+          const aqi = json.data.aqi;
+          const pm25 = json.data.iaqi && json.data.iaqi.pm25 ? json.data.iaqi.pm25.v : aqi;
+          currentPm25 = pm25;
+          updatePm25Display(pm25);
+          updateDynamicAtmosphere();
+        }
+      } catch (err) {}
+    }
+
+    function updatePm25Display(val) {
+      let label = 'ดีมาก';
+      let color = '#00d2ff'; // Sky Cyan
+
+      if (val <= 25) {
+        label = 'ดีมาก';
+        color = '#00d2ff';
+      } else if (val <= 50) {
+        label = 'ดี';
+        color = '#10b981'; // Green
+      } else if (val <= 100) {
+        label = 'ปานกลาง';
+        color = '#f59e0b'; // Amber
+      } else if (val <= 200) {
+        label = 'เริ่มมีผลต่อสุขภาพ';
+        color = '#f97316'; // Orange
+      } else {
+        label = 'มีผลต่อสุขภาพ';
+        color = '#ef4444'; // Red
+      }
+
+      // Update Home Card
+      const pVal = document.getElementById('pm25ValueText');
+      const pLevel = document.getElementById('pm25LevelText');
+      const pDot = document.getElementById('pm25Dot');
+      if (pVal) pVal.textContent = `PM 2.5: ${Math.round(val)} µg/m³`;
+      if (pLevel) {
+        pLevel.textContent = label;
+        pLevel.style.color = color;
+      }
+      if (pDot) {
+        pDot.style.background = color;
+        pDot.style.boxShadow = `0 0 8px ${color}`;
+      }
+
+      // Update Standby Screen
+      const sDot = document.getElementById('standbyPm25Dot');
+      const sText = document.getElementById('standbyPm25Text');
+      if (sText) sText.textContent = `PM 2.5: ${Math.round(val)} • ${label}`;
+      if (sDot) {
+        sDot.style.background = color;
+        sDot.style.boxShadow = `0 0 8px ${color}`;
+      }
+    }
+
+    function getForecastIconName(code) {
+      if (code === 0) return 'sun';
+      if (code >= 1 && code <= 3) return 'cloud-sun';
+      if (code >= 45 && code <= 48) return 'cloud-fog';
+      if (code >= 51 && code <= 67) return 'cloud-rain';
+      if (code >= 80 && code <= 82) return 'cloud-drizzle';
+      if (code >= 95) return 'cloud-lightning';
+      return 'cloud';
+    }
+
+    // Weather API (Open-Meteo Chiang Mai with 5-Day Daily Forecast)
+    async function fetchWeather() {
+      try {
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=18.7904&longitude=98.9847&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FBangkok';
+        const res = await fetch(url);
+        const data = await res.json();
+        const cur = data.current;
+        const temp = Math.round(cur.temperature_2m);
+        const wind = Math.round(cur.wind_speed_10m);
+        const hum = cur.relative_humidity_2m;
+        
+        let desc = 'ฟ้าโปร่ง';
+        currentWeatherCode = cur.weather_code;
+        const code = cur.weather_code;
+        if (code >= 1 && code <= 3) desc = 'มีเมฆบางส่วน';
+        else if (code >= 45 && code <= 48) desc = 'มีหมอก';
+        else if (code >= 51 && code <= 67) desc = 'ฝนตกเล็กน้อย';
+        else if (code >= 80 && code <= 82) desc = 'ฝนตก';
+        else if (code >= 95) desc = 'ฝนฟ้าคะนอง';
+
+        document.getElementById('weatherTemp').textContent = `${temp}°C`;
+        document.getElementById('weatherDesc').textContent = desc;
+        document.getElementById('weatherWind').textContent = `${wind} km/h`;
+        document.getElementById('weatherHumidity').textContent = `${hum}%`;
+
+        document.getElementById('standbyTemp').textContent = `${temp}°C`;
+        document.getElementById('standbyDesc').textContent = desc;
+
+        // Render 5-Day Forecast
+        const daily = data.daily;
+        const daysMap = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
+        const forecastEl = document.getElementById("forecastStrip");
+        if (forecastEl && daily && daily.time) {
+          let html = '';
+          for (let i = 1; i <= 5; i++) {
+            const d = new Date(daily.time[i]);
+            const dayName = daysMap[d.getDay()];
+            const iconName = getForecastIconName(daily.weather_code[i]);
+            const maxTemp = Math.round(daily.temperature_2m_max[i]);
+            const pop = daily.precipitation_probability_max && daily.precipitation_probability_max[i] !== undefined 
+                        ? daily.precipitation_probability_max[i] : 0;
+
+            html += `
+              <div class="forecast-col">
+                <span class="forecast-day-name">${dayName}</span>
+                <div class="forecast-icon-box"><i data-lucide="${iconName}"></i></div>
+                <span class="forecast-temp-val">${maxTemp}°</span>
+                <span class="forecast-rain-prob">${pop}%</span>
+              </div>
+            `;
+          }
+          forecastEl.innerHTML = html;
+          if (window.lucide) lucide.createIcons();
+        }
+
+        updateDynamicAtmosphere();
+      } catch (err) {}
+    }
+
+    // Dynamic Atmosphere Engine (Time-of-day + Weather + PM 2.5)
+    function updateDynamicAtmosphere() {
+      const now = new Date();
+      const hour = now.getHours() + (now.getMinutes() / 60);
+      const body = document.body;
+      const g1 = document.getElementById('ambientGlow1');
+      const g2 = document.getElementById('ambientGlow2');
+      const g3 = document.getElementById('ambientGlow3');
+
+      // 1. Severe Condition Check (Rain or High PM 2.5)
+      if (currentPm25 >= 95) {
+        atmosphereMode = 'smog';
+        body.style.background = 'radial-gradient(circle at 50% 25%, #291c13 0%, #15100b 50%, #070503 100%)';
+        if (g1) g1.style.background = '#d97706';
+        if (g2) g2.style.background = '#78716c';
+        if (g3) g3.style.background = '#b45309';
+        return;
+      }
+      
+      if (currentWeatherCode >= 51 && currentWeatherCode <= 99) {
+        atmosphereMode = 'rain';
+        body.style.background = 'radial-gradient(circle at 50% 20%, #141c2c 0%, #0a0f1b 50%, #03050c 100%)';
+        if (g1) g1.style.background = '#475569';
+        if (g2) g2.style.background = '#334155';
+        if (g3) g3.style.background = '#0284c7';
+        return;
+      }
+
+      // 2. Time-of-Day Progression
+      if (hour >= 5.0 && hour < 7.0) {
+        // เช้าตรู่ (Dawn): แสงพระอาทิตย์ขึ้นอ่อนๆ โทนส้มชมพูทอง
+        atmosphereMode = 'dawn';
+        body.style.background = 'radial-gradient(circle at 50% 25%, #2d182b 0%, #170d1e 50%, #080512 100%)';
+        if (g1) g1.style.background = '#fb923c'; // Peach
+        if (g2) g2.style.background = '#f43f5e'; // Rose
+        if (g3) g3.style.background = '#fde047'; // Soft Gold
+      } else if (hour >= 7.0 && hour < 11.5) {
+        // กลางวันยามเช้า (Morning): แดดยามเช้า ท้องฟ้าสีฟ้าสดใส
+        atmosphereMode = 'morning';
+        body.style.background = 'radial-gradient(circle at 50% 15%, #0e2d52 0%, #091a32 50%, #040915 100%)';
+        if (g1) g1.style.background = '#00d2ff'; // Cyan
+        if (g2) g2.style.background = '#38bdf8'; // Sky Blue
+        if (g3) g3.style.background = '#60a5fa'; // Azure
+      } else if (hour >= 11.5 && hour < 16.5) {
+        // ช่วงบ่าย (Afternoon): แดดร้อน สว่างจ้า
+        atmosphereMode = 'afternoon';
+        body.style.background = 'radial-gradient(circle at 50% 12%, #173660 0%, #0c1e38 50%, #030916 100%)';
+        if (g1) g1.style.background = '#f59e0b'; // Amber Sun
+        if (g2) g2.style.background = '#0284c7'; // Deep Ocean
+        if (g3) g3.style.background = '#38bdf8'; // Light Blue
+      } else if (hour >= 16.5 && hour < 19.0) {
+        // พลบค่ำ พระอาทิตย์ตก (Sunset): สีส้มม่วงพระอาทิตย์ตก
+        atmosphereMode = 'sunset';
+        body.style.background = 'radial-gradient(circle at 50% 22%, #3d1425 0%, #200c24 45%, #080514 100%)';
+        if (g1) g1.style.background = '#ea580c'; // Sunset Orange
+        if (g2) g2.style.background = '#9333ea'; // Deep Violet
+        if (g3) g3.style.background = '#ec4899'; // Crimson Pink
+      } else if (hour >= 19.0 && hour < 21.0) {
+        // หัวค่ำ (Dusk): ท้องฟ้าน้ำเงินครามทไวไลท์
+        atmosphereMode = 'dusk';
+        body.style.background = 'radial-gradient(circle at 50% 15%, #132145 0%, #0a1228 50%, #030612 100%)';
+        if (g1) g1.style.background = '#2563eb';
+        if (g2) g2.style.background = '#4f46e5';
+        if (g3) g3.style.background = '#06b6d4';
+      } else {
+        // กลางคืนดึก (Midnight): ท้องฟ้ามืดสนิท มีดาวบางๆ ระยิบระยับ
+        atmosphereMode = 'midnight';
+        body.style.background = 'radial-gradient(circle at 50% 15%, #0b1428 0%, #060b17 55%, #020409 100%)';
+        if (g1) g1.style.background = '#1d4ed8';
+        if (g2) g2.style.background = '#00d2ff';
+        if (g3) g3.style.background = '#6366f1';
+      }
+    }
+
+    // ========================================================
+    // CELESTIAL REAL-SKY ENGINE (พิกัด จ.เชียงใหม่ 18.79°N, 98.98°E)
+    // คำนวณตำแหน่งดาวจริง กลุ่มดาวจริง และหมุนตามเวลาดาราศาสตร์จริง (Sidereal Time)
+    // ========================================================
+    const skyCanvas = document.getElementById('skyCanvas');
+    const skyCtx = skyCanvas ? skyCanvas.getContext('2d') : null;
+
+    const LAT_CM = 18.7904;  // ละติจูด เชียงใหม่
+    const LON_CM = 98.9847;  // ลองจิจูด เชียงใหม่
+    const DEG_TO_RAD = Math.PI / 180;
+    const RAD_TO_DEG = 180 / Math.PI;
+
+    // ฐานข้อมูลดาวสว่างและกลุ่มดาวจริง (Equatorial: RA degrees, Dec degrees, Magnitude, Name)
+    const REAL_STARS = [
+      // Polaris (ดาวเหนือ - จุดหมุนท้องฟ้าซีกเหนือ สูง ~18.8 องศาเหนือขอบฟ้าทิศเหนือ)
+      { id: 'polaris', name: 'ดาวเหนือ', ra: 37.95, dec: 89.26, mag: 2.0, color: '#fef3c7', isPolaris: true },
+
+      // Orion (กลุ่มดาวนายพราน)
+      { id: 'betelgeuse', name: 'เบเทลจุส', ra: 88.79, dec: 7.41, mag: 0.5, color: '#fca5a5' },
+      { id: 'rigel', name: 'ไรเจล', ra: 78.63, dec: -8.20, mag: 0.1, color: '#93c5fd' },
+      { id: 'bellatrix', name: 'เบลลาทริกซ์', ra: 81.28, dec: 6.35, mag: 1.6, color: '#bae6fd' },
+      { id: 'saiph', name: '', ra: 86.94, dec: -9.67, mag: 2.1, color: '#93c5fd' },
+      { id: 'alnitak', name: '', ra: 84.41, dec: -1.94, mag: 1.7, color: '#bae6fd' },
+      { id: 'alnilam', name: '', ra: 84.05, dec: -1.20, mag: 1.7, color: '#bae6fd' },
+      { id: 'mintaka', name: '', ra: 83.00, dec: -0.30, mag: 2.2, color: '#bae6fd' },
+
+      // Ursa Major (กลุ่มดาวหมีใหญ่ / ดาวจระเข้)
+      { id: 'dubhe', name: 'Dubhe', ra: 165.93, dec: 61.75, mag: 1.8, color: '#fef08a' },
+      { id: 'merak', name: '', ra: 165.46, dec: 56.38, mag: 2.4, color: '#fef08a' },
+      { id: 'phecda', name: '', ra: 178.46, dec: 53.69, mag: 2.4, color: '#fef08a' },
+      { id: 'megrez', name: '', ra: 183.86, dec: 57.03, mag: 3.3, color: '#fef08a' },
+      { id: 'alioth', name: '', ra: 193.51, dec: 55.96, mag: 1.8, color: '#ffffff' },
+      { id: 'mizar', name: '', ra: 200.98, dec: 54.92, mag: 2.2, color: '#ffffff' },
+      { id: 'alkaid', name: '', ra: 206.89, dec: 49.31, mag: 1.8, color: '#93c5fd' },
+
+      // Cassiopeia (กลุ่มดาวค้างคาว - รูป W)
+      { id: 'schedar', name: 'Schedar', ra: 10.13, dec: 56.54, mag: 2.2, color: '#fed7aa' },
+      { id: 'caph', name: '', ra: 2.29, dec: 59.15, mag: 2.3, color: '#ffffff' },
+      { id: 'gammacas', name: '', ra: 14.18, dec: 60.72, mag: 2.1, color: '#bae6fd' },
+      { id: 'ruchbah', name: '', ra: 21.45, dec: 60.23, mag: 2.7, color: '#ffffff' },
+      { id: 'segin', name: '', ra: 26.68, dec: 63.67, mag: 3.4, color: '#bae6fd' },
+
+      // Summer Triangle (สามเหลี่ยมฤดูร้อน)
+      { id: 'vega', name: 'เวกา', ra: 279.23, dec: 38.78, mag: 0.0, color: '#bfdbfe' },
+      { id: 'deneb', name: 'เดเนบ', ra: 310.36, dec: 45.28, mag: 1.25, color: '#ffffff' },
+      { id: 'altair', name: 'อัลแทร์', ra: 297.70, dec: 8.87, mag: 0.77, color: '#fef08a' },
+
+      // Winter Hexagon & Navigation Stars
+      { id: 'sirius', name: 'ซิริอุส (สว่างที่สุด)', ra: 101.29, dec: -16.72, mag: -1.46, color: '#e0f2fe' },
+      { id: 'procyon', name: 'โพรซิออน', ra: 114.83, dec: 5.22, mag: 0.38, color: '#fef3c7' },
+      { id: 'pollux', name: 'พอลลักซ์', ra: 116.33, dec: 28.03, mag: 1.15, color: '#fed7aa' },
+      { id: 'castor', name: 'คาสเตอร์', ra: 113.65, dec: 31.89, mag: 1.58, color: '#ffffff' },
+      { id: 'capella', name: 'คาเพลลา', ra: 79.17, dec: 46.00, mag: 0.08, color: '#fde047' },
+      { id: 'aldebaran', name: 'อัลเดบาแรน', ra: 68.98, dec: 16.51, mag: 0.85, color: '#f97316' },
+
+      // Zodiac & Southern Prominent Stars
+      { id: 'arcturus', name: 'ดวงแก้ว', ra: 213.91, dec: 19.18, mag: -0.05, color: '#fdba74' },
+      { id: 'spica', name: 'รวงข้าว', ra: 201.30, dec: -11.16, mag: 0.98, color: '#bae6fd' },
+      { id: 'antares', name: 'ปาริชาต', ra: 247.35, dec: -26.43, mag: 1.06, color: '#f87171' },
+      { id: 'regulus', name: 'หัวใจสิงห์', ra: 152.09, dec: 11.97, mag: 1.36, color: '#bae6fd' },
+      { id: 'canopus', name: 'คาโนปุส', ra: 95.99, dec: -52.70, mag: -0.74, color: '#ffffff' }
+    ];
+
+    // เส้นกลุ่มดาวจริง (Constellation Lines)
+    const CONSTELLATION_LINES = [
+      // Orion (นายพราน)
+      ['betelgeuse', 'bellatrix'], ['bellatrix', 'mintaka'], ['mintaka', 'alnilam'],
+      ['alnilam', 'alnitak'], ['alnitak', 'saiph'], ['betelgeuse', 'alnitak'],
+      ['bellatrix', 'rigel'], ['saiph', 'rigel'],
+      // Ursa Major (ดาวจระเข้ / กระบวยใหญ่)
+      ['dubhe', 'merak'], ['merak', 'phecda'], ['phecda', 'megrez'],
+      ['megrez', 'dubhe'], ['megrez', 'alioth'], ['alioth', 'mizar'], ['mizar', 'alkaid'],
+      // Cassiopeia (ค้างคาว)
+      ['caph', 'schedar'], ['schedar', 'gammacas'], ['gammacas', 'ruchbah'], ['ruchbah', 'segin'],
+      // Summer Triangle (สามเหลี่ยมฤดูร้อน)
+      ['vega', 'deneb'], ['deneb', 'altair'], ['altair', 'vega'],
+      // Gemini (คนคู่)
+      ['castor', 'pollux']
+    ];
+
+    // ดาวระยิบระยับเสริมฉากหลัง (Faint background stars ~100 ดวง กระจายตามทรงกลมท้องฟ้า)
+    const BACKGROUND_FAINT_STARS = [];
+    for (let i = 0; i < 90; i++) {
+      BACKGROUND_FAINT_STARS.push({
+        ra: Math.random() * 360,
+        dec: (Math.random() * 160) - 70,
+        mag: Math.random() * 2.5 + 3.0,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.03 + 0.01
+      });
+    }
+
+    // Rain Streaks
+    const raindrops = [];
+    for (let i = 0; i < 60; i++) {
+      raindrops.push({ x: 0, y: 0, len: 14, speed: 7, alpha: 0.2 });
+    }
+
+    function initSkyCanvas() {
+      if (!skyCanvas) return;
+      skyCanvas.width = window.innerWidth;
+      skyCanvas.height = window.innerHeight;
+
+      raindrops.forEach(d => {
+        d.x = Math.random() * skyCanvas.width;
+        d.y = Math.random() * skyCanvas.height;
+        d.len = Math.random() * 14 + 10;
+        d.speed = Math.random() * 8 + 6;
+      });
+    }
+    window.addEventListener('resize', initSkyCanvas);
+    initSkyCanvas();
+
+    // คำนวณเวลาดาราศาสตร์ท้องถิ่น (Local Sidereal Time - LST) สำหรับ จ.เชียงใหม่
+    function getChiangMaiSiderealTime(date) {
+      const jd = (date.getTime() / 86400000) + 2440587.5;
+      const d = jd - 2451545.0;
+      let gmst = 280.46061837 + 360.98564736629 * d;
+      let lst = (gmst + LON_CM) % 360;
+      if (lst < 0) lst += 360;
+      return lst; // in degrees
+    }
+
+    // แปลงพิกัดดาว Equatorial (RA, Dec) -> พิกัดหน้าจอ (X, Y) สำหรับผู้สังเกตการณ์ที่เชียงใหม่
+    function projectStarToScreen(raDeg, decDeg, lstDeg, width, height) {
+      const haRad = ((lstDeg - raDeg + 360) % 360) * DEG_TO_RAD;
+      const decRad = decDeg * DEG_TO_RAD;
+      const latRad = LAT_CM * DEG_TO_RAD;
+
+      // คำนวณ Altitude (มุมเงย)
+      const sinAlt = Math.sin(decRad) * Math.sin(latRad) + Math.cos(decRad) * Math.cos(latRad) * Math.cos(haRad);
+      const altRad = Math.asin(Math.max(-1, Math.min(1, sinAlt)));
+      const altDeg = altRad * RAD_TO_DEG;
+
+      // ถ้าอยู่ต่ำกว่าขอบฟ้าเกินไป ไม่แสดงผล
+      if (altDeg < -15) return null;
+
+      // คำนวณ Azimuth (มุมทิศ)
+      const cosAz = (Math.sin(decRad) - Math.sin(latRad) * sinAlt) / (Math.cos(latRad) * Math.cos(altRad) + 1e-6);
+      let azRad = Math.acos(Math.max(-1, Math.min(1, cosAz)));
+      if (Math.sin(haRad) > 0) azRad = (Math.PI * 2) - azRad;
+
+      // Project Dome onto Screen (Zenith near center-upper)
+      const maxR = Math.max(width, height) * 0.72;
+      const r = ((Math.PI / 2) - altRad) / (Math.PI / 2) * maxR;
+
+      const centerX = width * 0.5;
+      const centerY = height * 0.38;
+
+      const x = centerX + r * Math.sin(azRad);
+      const y = centerY - r * Math.cos(azRad);
+
+      return { x, y, altDeg };
+    }
+
+    let celestialTick = 0;
+
+    function renderSky() {
+      if (!skyCtx || !skyCanvas) return;
+      const w = skyCanvas.width;
+      const h = skyCanvas.height;
+      skyCtx.clearRect(0, 0, w, h);
+      celestialTick += 0.02;
+
+      // 1. หมุนตามเวลาจริงของเชียงใหม่ (หรือจำลองการหมุนนุ่มนวล)
+      const now = new Date();
+      const lstDeg = getChiangMaiSiderealTime(now);
+
+      // ถ้าเป็นกลางคืนดึก หรือหัวค่ำ แสดงดาวจริง
+      if (atmosphereMode === 'midnight' || atmosphereMode === 'dusk') {
+        const starPosMap = {};
+
+        // 1.1 วาดดาวระยิบระยับพื้นหลัง (Faint Stars)
+        BACKGROUND_FAINT_STARS.forEach(s => {
+          const pt = projectStarToScreen(s.ra, s.dec, lstDeg, w, h);
+          if (pt && pt.x >= 0 && pt.x <= w && pt.y >= 0 && pt.y <= h) {
+            s.phase += s.speed;
+            const tw = 0.2 + (Math.sin(s.phase) * 0.5 + 0.5) * 0.65;
+            skyCtx.beginPath();
+            skyCtx.arc(pt.x, pt.y, Math.max(0.6, 2.2 - (s.mag * 0.35)), 0, Math.PI * 2);
+            skyCtx.fillStyle = `rgba(255, 255, 255, ${tw * 0.6})`;
+            skyCtx.fill();
+          }
+        });
+
+        // 1.2 คำนวณพิกัดดาวจริง
+        REAL_STARS.forEach(s => {
+          const pt = projectStarToScreen(s.ra, s.dec, lstDeg, w, h);
+          if (pt) {
+            starPosMap[s.id] = pt;
+          }
+        });
+
+        // 1.3 วาดเส้นกลุ่มดาวจริง (Constellation Lines)
+        skyCtx.lineWidth = 1;
+        skyCtx.strokeStyle = 'rgba(0, 210, 255, 0.16)';
+        CONSTELLATION_LINES.forEach(([s1, s2]) => {
+          const p1 = starPosMap[s1];
+          const p2 = starPosMap[s2];
+          if (p1 && p2 && p1.altDeg > 2 && p2.altDeg > 2) {
+            skyCtx.beginPath();
+            skyCtx.moveTo(p1.x, p1.y);
+            skyCtx.lineTo(p2.x, p2.y);
+            skyCtx.stroke();
+          }
+        });
+
+        // 1.4 วาดดาวสว่างจริง พร้อมแสงเรืองรอบตัว
+        REAL_STARS.forEach(s => {
+          const pt = starPosMap[s.id];
+          if (pt && pt.x >= -30 && pt.x <= w + 30 && pt.y >= -30 && pt.y <= h + 30) {
+            const rad = Math.max(1.4, 3.8 - (s.mag * 0.7));
+            const pulse = 0.8 + Math.sin(celestialTick * 2 + s.ra) * 0.2;
+
+            // Halo glow
+            const grad = skyCtx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, rad * 3.5);
+            grad.addColorStop(0, s.color);
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            skyCtx.fillStyle = grad;
+            skyCtx.beginPath();
+            skyCtx.arc(pt.x, pt.y, rad * 3.5, 0, Math.PI * 2);
+            skyCtx.fill();
+
+            // Star Core
+            skyCtx.beginPath();
+            skyCtx.arc(pt.x, pt.y, rad, 0, Math.PI * 2);
+            skyCtx.fillStyle = '#ffffff';
+            skyCtx.fill();
+
+            // Label (ถ้าเป็นดาวดวงสำคัญและอยู่เหนือขอบฟ้า)
+            if (s.name && pt.altDeg > 8) {
+              skyCtx.font = '10px "Plus Jakarta Sans", "Prompt", sans-serif';
+              skyCtx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+              skyCtx.fillText(s.name, pt.x + 8, pt.y + 3);
+            }
+          }
+        });
+
+      } else if (atmosphereMode === 'rain') {
+        // Render Rain Streaks
+        skyCtx.lineWidth = 1;
+        skyCtx.strokeStyle = 'rgba(0, 210, 255, 0.25)';
+        raindrops.forEach(d => {
+          skyCtx.beginPath();
+          skyCtx.moveTo(d.x, d.y);
+          skyCtx.lineTo(d.x - 2, d.y + d.len);
+          skyCtx.stroke();
+          d.y += d.speed;
+          d.x -= 1;
+          if (d.y > skyCanvas.height) {
+            d.y = -10;
+            d.x = Math.random() * skyCanvas.width;
+          }
+        });
+      }
+
+      requestAnimationFrame(renderSky);
+    }
+    requestAnimationFrame(renderSky);
+
+    // ----------------------------------------------------
+    // CCTV TAPO C100/C200 PTZ & TWO-WAY TALK LOGIC
+    // ----------------------------------------------------
+    let isCamTalking = false;
+    let camAudioActive = { indoor: false, outdoor: false };
+
+    function sendPtzCommand(camId, direction) {
+      // Animation feedback on D-Pad
+      const statusPill = document.getElementById('systemStatusPill');
+      if (statusPill) {
+        statusPill.innerHTML = `<div class="pulse-dot"></div><span>PTZ: ${direction.toUpperCase()} (${camId})</span>`;
+        setTimeout(() => {
+          statusPill.innerHTML = '<div class="pulse-dot"></div><span>ระบบออนไลน์</span>';
+        }, 1500);
+      }
+
+      // ส่งคำสั่งไปยัง Vercel API หรือ local go2rtc / ONVIF bridge
+      fetch(API_CONTROL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'cctv_ptz', camera: camId, direction: direction })
+      }).catch(() => null);
+    }
+
+    function toggleCamAudio(camId) {
+      camAudioActive[camId] = !camAudioActive[camId];
+      const btn = document.getElementById(camId === 'indoor' ? 'btnAudioIndoor' : 'btnAudioOutdoor');
+      const icon = document.getElementById(camId === 'indoor' ? 'iconAudioIndoor' : 'iconAudioOutdoor');
+      if (btn) {
+        btn.classList.toggle('active', camAudioActive[camId]);
+        btn.querySelector('span').textContent = camAudioActive[camId] ? 'ปิดเสียง' : 'ฟังเสียง';
+      }
+      if (icon) {
+        icon.setAttribute('data-lucide', camAudioActive[camId] ? 'volume-x' : 'volume-2');
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    function startCamTalk(camId) {
+      isCamTalking = true;
+      const btn = document.getElementById(camId === 'indoor' ? 'btnTalkIndoor' : 'btnTalkOutdoor');
+      if (btn) {
+        btn.classList.add('talking');
+        btn.querySelector('span').textContent = 'กำลังพูด...';
+      }
+      // Request microphone stream for 2-way talk
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ audio: true }).catch(() => null);
+      }
+    }
+
+    function stopCamTalk(camId) {
+      isCamTalking = false;
+      const btn = document.getElementById(camId === 'indoor' ? 'btnTalkIndoor' : 'btnTalkOutdoor');
+      if (btn) {
+        btn.classList.remove('talking');
+        btn.querySelector('span').textContent = 'กดค้างเพื่อพูด';
+      }
+    }
+
+    function openCamSettingsModal(camId) {
+      alert(`วิธีเชื่อมต่อภาพสด + เสียง + หมุนกล้อง + พูดตอบโต้ จาก Tapo ${camId}:\n\n1. เปิดใช้งาน RTSP/ONVIF ในแอป Tapo (Device Settings -> Advanced Settings -> Camera Account)\n2. รัน go2rtc เพื่อแปลง RTSP เป็น WebRTC (ฟังเสียงและกดพูดสองทางได้บนเว็บ)\n3. นำ WebRTC URL หรือ IP มาใส่เพื่อสตรีมสด`);
+    }
+
+    // Initial weather & air quality fetch
+    fetchWeather();
+    fetchAirQuality();
+    setInterval(fetchWeather, 300000); // every 5 mins
+    setInterval(fetchAirQuality, 300000); // every 5 mins
+    setInterval(updateDynamicAtmosphere, 60000); // check atmosphere progression every min
+
+    // ----------------------------------------------------
+    // 2. SMOOTH SINE WAVEFORM VISUALIZER (Siri-like animation)
+    // ----------------------------------------------------
+    const waveCanvas = document.getElementById('voiceWaveCanvas');
+    const waveCtx = waveCanvas ? waveCanvas.getContext('2d') : null;
+    let wavePhase = 0;
+    let waveMode = 'idle'; // 'idle', 'listening', 'success'
+
+    function resizeWaveCanvas() {
+      if (!waveCanvas) return;
+      waveCanvas.width = waveCanvas.parentElement.clientWidth * window.devicePixelRatio;
+      waveCanvas.height = waveCanvas.parentElement.clientHeight * window.devicePixelRatio;
+    }
+    window.addEventListener('resize', resizeWaveCanvas);
+    setTimeout(resizeWaveCanvas, 100);
+
+    function drawSmoothWave() {
+      if (!waveCtx || !waveCanvas) return;
+      const w = waveCanvas.width;
+      const h = waveCanvas.height;
+      waveCtx.clearRect(0, 0, w, h);
+
+      wavePhase += (waveMode === 'listening' ? 0.08 : waveMode === 'success' ? 0.05 : 0.02);
+
+      let colors = [];
+      let amplitude = 12;
+
+      if (waveMode === 'listening') {
+        amplitude = 30 + Math.sin(wavePhase * 3) * 10;
+        colors = [
+          'rgba(0, 210, 255, 0.75)',
+          'rgba(168, 85, 247, 0.65)',
+          'rgba(244, 63, 94, 0.55)'
+        ];
+      } else if (waveMode === 'success') {
+        amplitude = 20;
+        colors = [
+          'rgba(16, 185, 129, 0.85)',
+          'rgba(52, 211, 153, 0.65)',
+          'rgba(0, 210, 255, 0.5)'
+        ];
+      } else {
+        // Idle
+        amplitude = 8;
+        colors = [
+          'rgba(0, 210, 255, 0.25)',
+          'rgba(59, 130, 246, 0.2)'
+        ];
+      }
+
+      colors.forEach((color, idx) => {
+        waveCtx.beginPath();
+        waveCtx.strokeStyle = color;
+        waveCtx.lineWidth = 2.5 * window.devicePixelRatio;
+        waveCtx.lineCap = 'round';
+
+        const shift = idx * 0.8;
+        for (let x = 0; x <= w; x += 4) {
+          const progress = x / w;
+          // Apply a Hann window so edges taper smoothly to zero
+          const envelope = Math.sin(progress * Math.PI);
+          const y = (h / 2) + Math.sin(progress * 7 + wavePhase + shift) * amplitude * envelope * window.devicePixelRatio;
+          if (x === 0) waveCtx.moveTo(x, y);
+          else waveCtx.lineTo(x, y);
+        }
+        waveCtx.stroke();
+      });
+
+      requestAnimationFrame(drawSmoothWave);
+    }
+    requestAnimationFrame(drawSmoothWave);
+
+    // ----------------------------------------------------
+    // 3. VOICE COMMANDS & FAST-PATH SPEECH (0.3s)
+    // ----------------------------------------------------
+    let isRecording = false;
+    let speechRecognizer = null;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      speechRecognizer = new SpeechRec();
+      speechRecognizer.lang = 'th-TH';
+      speechRecognizer.continuous = false;
+      speechRecognizer.interimResults = false;
+
+      speechRecognizer.onstart = () => {
+        isRecording = true;
+        waveMode = 'listening';
+        document.getElementById('micBtn').classList.add('listening');
+        const st = document.getElementById('voiceStatusText');
+        st.textContent = 'กำลังฟังคำสั่งของคุณ... (พูดได้เลย)';
+        st.className = 'voice-status-label listening';
+      };
+
+      speechRecognizer.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        processVoiceCommand(text);
+      };
+
+      speechRecognizer.onerror = () => {
+        stopVoiceRecording();
+        const st = document.getElementById('voiceStatusText');
+        st.textContent = 'ไม่ได้รับเสียง กรุณาลองแตะไมค์อีกครั้ง';
+        st.className = 'voice-status-label';
+        waveMode = 'idle';
+      };
+
+      speechRecognizer.onend = () => {
+        stopVoiceRecording();
+      };
+    }
+
+    function toggleSpeechRecording() {
+      if (!speechRecognizer) {
+        alert('เบราว์เซอร์นี้ไม่รองรับระบบสั่งการด้วยเสียง กรุณาใช้ Chrome หรือ Safari');
+        return;
+      }
+      if (isRecording) {
+        speechRecognizer.stop();
+        stopVoiceRecording();
+      } else {
+        speechRecognizer.start();
+      }
+    }
+
+    function stopVoiceRecording() {
+      isRecording = false;
+      const btn = document.getElementById('micBtn');
+      if (btn) btn.classList.remove('listening');
+    }
+
+    async function processVoiceCommand(text) {
+      if (!text || !text.trim()) return;
+      const st = document.getElementById('voiceStatusText');
+      st.textContent = `"${text}" ➔ AI กำลังสั่งการ...`;
+      st.className = 'voice-status-label';
+
+      try {
+        const res = await fetch(API_VOICE, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command: text })
+        });
+        const reply = await res.text();
+
+        // Smooth Green Wave Feedback
+        waveMode = 'success';
+        st.textContent = reply;
+        st.className = 'voice-status-label success';
+
+        // Speak reply via SpeechSynthesis
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(reply);
+          u.lang = 'th-TH';
+          window.speechSynthesis.speak(u);
+        }
+
+        // Sync devices in background
+        setTimeout(syncAllStatus, 600);
+
+        // Reset to idle after 4 seconds
+        setTimeout(() => {
+          waveMode = 'idle';
+          st.textContent = 'แตะที่ปุ่มไมค์เพื่อสั่งการด้วยเสียง';
+          st.className = 'voice-status-label';
+        }, 4000);
+
+      } catch (err) {
+        st.textContent = 'สั่งงานไม่สำเร็จ ตรวจสอบการเชื่อมต่อ';
+        waveMode = 'idle';
+      }
+    }
+
+    function triggerVoiceModal() {
+      switchDockTab('home');
+      toggleSpeechRecording();
+    }
+
+    // ----------------------------------------------------
+    // 4. DEVICE CONTROL (Click Anywhere on Card or Switch)
+    // ----------------------------------------------------
+    function handleCardClick(devKey, event) {
+      // Toggle device
+      states[devKey] = !states[devKey];
+      updateDeviceCardUI(devKey, states[devKey]);
+      
+      // Send Fast API Control
+      fetch(API_CONTROL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ device: devKey, state: states[devKey] })
+      }).catch(() => null);
+    }
+
+    function handleSwitchClick(devKey, event) {
+      event.stopPropagation(); // Prevent duplicate trigger from card
+      handleCardClick(devKey, event);
+    }
+
+    function handleFanCardClick(event) {
+      states.fan = !states.fan;
+      const card = document.getElementById('cardFan');
+      if (card) card.classList.toggle('active', states.fan);
+      const sceneId = states.fan ? 'SXvpOX3pq6XmRBWO' : '7hOnwT8sio3St18V';
+      const sceneName = states.fan ? 'เปิดพัดลม' : 'ปิดพัดลม';
+      triggerSceneDirect(sceneId, sceneName);
+    }
+
+    function handleFanSwitchClick(event) {
+      event.stopPropagation();
+      handleFanCardClick(event);
+    }
+
+    function updateDeviceCardUI(key, isActive) {
+      states[key] = isActive;
+      const formattedKey = key.charAt(0).toUpperCase() + key.slice(1);
+      const card = document.getElementById('card' + formattedKey);
+      const stEl = document.getElementById('state' + formattedKey);
+      if (card) {
+        card.classList.toggle('active', isActive);
+      }
+      if (stEl) {
+        stEl.textContent = isActive ? 'เปิดอยู่' : 'ปิดอยู่';
+      }
+    }
+
+    // ----------------------------------------------------
+    // 5. SCENE CONTROL (Instant Triggers)
+    // ----------------------------------------------------
+    async function triggerSceneDirect(sceneId, sceneName, elem) {
+      if (elem) {
+        elem.classList.add('triggered');
+        setTimeout(() => elem.classList.remove('triggered'), 400);
+      }
+
+      // Optimistic update for fan scenes
+      if (sceneId === 'SXvpOX3pq6XmRBWO') {
+        states.fan = true;
+        const c = document.getElementById('cardFan');
+        if (c) c.classList.add('active');
+      } else if (sceneId === '7hOnwT8sio3St18V') {
+        states.fan = false;
+        const c = document.getElementById('cardFan');
+        if (c) c.classList.remove('active');
+      }
+
+      fetch(API_CONTROL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'trigger_scene', scene_id: sceneId, scene_name: sceneName })
+      }).catch(() => null);
+
+      setTimeout(syncAllStatus, 1000);
+    }
+
+    function runBedtimeSceneDirect(elem) {
+      if (elem) {
+        elem.classList.add('triggered');
+        setTimeout(() => elem.classList.remove('triggered'), 400);
+      }
+      // Bedtime: Turn off living, small, kitchen, outdoor; turn on bedroom
+      ['kitchen', 'outdoor', 'living_room', 'small_room'].forEach(k => {
+        updateDeviceCardUI(k, false);
+        fetch(API_CONTROL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device: k, state: false }) }).catch(()=>null);
+      });
+      updateDeviceCardUI('bedroom', true);
+      fetch(API_CONTROL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device: 'bedroom', state: true }) }).catch(()=>null);
+    }
+
+    // ----------------------------------------------------
+    // 6. TV & FAN REMOTE MODALS
+    // ----------------------------------------------------
+    function openRemoteModal(type, event) {
+      if (event) event.stopPropagation();
+      const modal = document.getElementById(type === 'tv' ? 'modalTvRemote' : 'modalFanRemote');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeRemoteModal(type) {
+      const modal = document.getElementById(type === 'tv' ? 'modalTvRemote' : 'modalFanRemote');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function sendTvKeyDirect(key, elem) {
+      if (elem) {
+        elem.classList.add('active-key');
+        setTimeout(() => elem.classList.remove('active-key'), 180);
+      }
+      if (key === 'Power') {
+        states.tv = !states.tv;
+        const c = document.getElementById('cardTv');
+        if (c) c.classList.toggle('active', states.tv);
+      }
+      fetch(API_CONTROL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'tv_key', key: key })
+      }).catch(() => null);
+    }
+
+    // ----------------------------------------------------
+    // 7. STATUS SYNC (Ultra-Fast Parallel Backend)
+    // ----------------------------------------------------
+    async function syncAllStatus() {
+      const syncIcon = document.getElementById('syncIcon');
+      if (syncIcon) syncIcon.classList.add('spin');
+
+      try {
+        const res = await fetch(API_CONTROL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'get_status' })
+        });
+        const json = await res.json();
+        const data = json.data;
+        if (data) {
+          Object.entries(data).forEach(([k, val]) => {
+            if (k === 'tv') return; // Do not overwrite IR TV
+            if (typeof val === 'boolean') updateDeviceCardUI(k, val);
+          });
+        }
+      } catch (err) {}
+      finally {
+        if (syncIcon) syncIcon.classList.remove('spin');
+      }
+    }
+
+    // ----------------------------------------------------
+    // 8. DOCK NAVIGATION
+    // ----------------------------------------------------
+    function switchDockTab(tabId) {
+      document.querySelectorAll('.dock-item').forEach(el => el.classList.remove('active'));
+      const activeDock = document.getElementById('dock-' + tabId);
+      if (activeDock) activeDock.classList.add('active');
+
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+      const activeView = document.getElementById('view-' + tabId);
+      if (activeView) activeView.classList.add('active');
+
+      if (tabId === 'home') setTimeout(resizeWaveCanvas, 50);
+      if (tabId === 'cctv') initCctvSimulation();
+    }
+
+    // ----------------------------------------------------
+    // 9. STANDBY MODE (2-Minute Inactivity Screen)
+    // ----------------------------------------------------
+    let standbyTimer = null;
+    const STANDBY_TIMEOUT = 120000; // 2 minutes (120 seconds)
+
+    function resetStandbyTimer() {
+      if (standbyTimer) clearTimeout(standbyTimer);
+      standbyTimer = setTimeout(enterStandbyMode, STANDBY_TIMEOUT);
+    }
+
+    function enterStandbyMode() {
+      const standbyEl = document.getElementById('standbyScreen');
+      if (standbyEl) standbyEl.classList.add('active');
+    }
+
+    function wakeFromStandby() {
+      const standbyEl = document.getElementById('standbyScreen');
+      if (standbyEl) standbyEl.classList.remove('active');
+      switchDockTab('home');
+      resetStandbyTimer();
+    }
+
+    // Listen to user interactions to reset 2-minute timer
+    ['pointerdown', 'mousemove', 'keydown', 'touchstart', 'click'].forEach(evt => {
+      window.addEventListener(evt, resetStandbyTimer, { passive: true });
+    });
+    resetStandbyTimer();
+
+    // ----------------------------------------------------
+    // 10. CCTV TAPO C100 REALTIME LIVE VIEW SIMULATION
+    // ----------------------------------------------------
+    function initCctvSimulation() {
+      ['Indoor', 'Outdoor'].forEach(name => {
+        const canvas = document.getElementById('camCanvas' + name);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+
+        let frame = 0;
+        function renderCam() {
+          if (!document.getElementById('view-cctv').classList.contains('active')) return;
+          frame++;
+          const w = canvas.width;
+          const h = canvas.height;
+
+          // Realistic Dark Security Camera View
+          const grad = ctx.createLinearGradient(0, 0, 0, h);
+          if (name === 'Indoor') {
+            grad.addColorStop(0, '#0a101e');
+            grad.addColorStop(1, '#060a14');
+          } else {
+            grad.addColorStop(0, '#090e18');
+            grad.addColorStop(1, '#04070e');
+          }
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, w, h);
+
+          // Subtle Room Silhouette
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+          ctx.fillRect(w * 0.15, h * 0.35, w * 0.7, h * 0.45);
+
+          // Digital Noise
+          for (let i = 0; i < 40; i++) {
+            const rx = Math.random() * w;
+            const ry = Math.random() * h;
+            ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.06})`;
+            ctx.fillRect(rx, ry, 2, 2);
+          }
+
+          // Subtle Scanline
+          const scanY = (frame * 1.5) % h;
+          ctx.fillStyle = 'rgba(0, 210, 255, 0.03)';
+          ctx.fillRect(0, scanY, w, 2);
+
+          requestAnimationFrame(renderCam);
+        }
+        requestAnimationFrame(renderCam);
+      });
+    }
+
+    function refreshCamStream(camName) {
+      initCctvSimulation();
+    }
+
+    function toggleCamFullscreen(camName) {
+      const box = document.getElementById(camName === 'indoor' ? 'camFeedIndoor' : 'camFeedOutdoor');
+      if (!box) return;
+      if (!document.fullscreenElement) {
+        box.requestFullscreen?.() || box.webkitRequestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+
+    // Initialize Lucide Icons & Initial Status Sync
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      syncAllStatus();
+    });
+  </script>
+</body>
+</html>
