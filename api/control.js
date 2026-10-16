@@ -25,6 +25,12 @@ module.exports = async (req, res) => {
     const input = req.body || {};
     const action = input.action || (req.query && req.query.action);
 
+    // 0. Auto-Discovery for Tuya & eWeLink
+    if (action === 'discover') {
+      const discoverHandler = require('./discover');
+      return await discoverHandler(req, res);
+    }
+
     // 1. Get Status (Sync all devices)
     if (action === 'get_status') {
       const statusMap = await getAllStatus();
