@@ -2231,9 +2231,15 @@
                 <div style="font-size: 0.72rem; color: var(--text-dim);">Tapo C200 • บริเวณนอกบ้านและโรงรถ</div>
               </div>
             </div>
-            <div class="cam-badge snapshot" id="camBadgeOutdoor">
-              <i data-lucide="camera" style="width: 12px; height: 12px;"></i>
-              <span>สแนปช็อต (1 นาที)</span>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <div class="cam-badge" id="camTunnelStatusBadge" onclick="checkCctvTunnelStatus(true)" style="cursor: pointer; background: rgba(16, 185, 129, 0.14); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399;" title="คลิกเพื่อเช็คสถานะ Cloudflare Tunnel (/status)">
+                <div class="cam-dot" id="camTunnelStatusDot" style="background: #10b981;"></div>
+                <span id="camTunnelStatusText">Tunnel Online</span>
+              </div>
+              <div class="cam-badge snapshot" id="camBadgeOutdoor">
+                <i data-lucide="camera" style="width: 12px; height: 12px;"></i>
+                <span>สแนปช็อต (1 นาที)</span>
+              </div>
             </div>
           </div>
 
@@ -2714,16 +2720,23 @@
         <!-- Tab 3: กล้อง CCTV (Cameras) -->
         <div class="owner-tab-pane" id="pane-cctv">
           <div class="owner-card-box">
-            <strong style="color: var(--accent-cyan); font-size: 0.95rem;">กล้องนอกบ้าน Tapo C200 (Outdoor CCTV)</strong>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <strong style="color: var(--accent-cyan); font-size: 0.95rem;">กล้องนอกบ้าน Tapo C200 (Cloudflare Tunnel)</strong>
+              <span id="cmsCctvStatusPill" style="font-size: 0.74rem; padding: 4px 10px; border-radius: 99px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-weight: 600;">🟢 Tunnel Online</span>
+            </div>
             
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-              <label style="font-size: 0.78rem; color: var(--text-muted);">URL สตรีมภาพ หรือ สแนปช็อตภาพนิ่ง (Custom Snapshot / Stream URL):</label>
-              <input type="text" class="owner-field-input" id="cfgCctvOutdoorUrl" placeholder="เช่น https://camera.yourdomain.com/snapshot.jpg หรือ http://192.168.1.189/snapshot">
-              <span style="font-size: 0.72rem; color: var(--text-dim);">รองรับ URL จาก Cloudflare Tunnel, RTSP to HTTP, หรือเว็บแคมในเครือข่าย</span>
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
+              <label style="font-size: 0.78rem; color: var(--text-muted);">Cloudflare Tunnel Public URL หรือ Snapshot URL:</label>
+              <input type="text" class="owner-field-input" id="cfgCctvOutdoorUrl" placeholder="เช่น https://pan-manchester-vehicle-continually.trycloudflare.com">
+              <div style="font-size: 0.72rem; color: var(--text-dim); line-height: 1.5; background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
+                <div>• <strong>เช็คสถานะ:</strong> <span id="lblCctvStatusUrl" style="color: #38bdf8;">https://pan-manchester-vehicle-continually.trycloudflare.com/status</span></div>
+                <div>• <strong>ดูภาพ Snapshot:</strong> <span id="lblCctvSnapUrl" style="color: #34d399;">https://pan-manchester-vehicle-continually.trycloudflare.com/snapshot/outdoor</span></div>
+                <div>• <strong>ดูวิดีโอสด 1080p:</strong> <span id="lblCctvVideoUrl" style="color: #c084fc;">https://pan-manchester-vehicle-continually.trycloudflare.com/video/outdoor</span></div>
+              </div>
             </div>
 
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-              <div style="flex: 1; min-width: 200px;">
+              <div style="flex: 1; min-width: 180px;">
                 <label style="font-size: 0.78rem; color: var(--text-muted);">ความถี่รีเฟรชภาพ Snapshot:</label>
                 <select class="owner-field-input" id="cfgCctvInterval">
                   <option value="15">ทุก 15 วินาที</option>
@@ -2733,7 +2746,10 @@
                   <option value="0">ปิดการรีเฟรชอัตโนมัติ</option>
                 </select>
               </div>
-              <div style="margin-top: 18px;">
+              <div style="margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="owner-btn" onclick="checkCctvTunnelStatus(true)" style="background: rgba(16, 185, 129, 0.16); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;">
+                  <i data-lucide="activity" style="width:16px;"></i> เช็คสถานะ (/status)
+                </button>
                 <button class="owner-btn owner-btn-cyan" onclick="testCctvSnapshot()">
                   <i data-lucide="camera" style="width:16px;"></i> ทดสอบโหลดภาพทันที
                 </button>
@@ -3837,9 +3853,10 @@
       }
     }
 
+    const DEFAULT_CCTV_TUNNEL_URL = 'https://pan-manchester-vehicle-continually.trycloudflare.com';
     let streamServerUrl = localStorage.getItem('tapo_stream_server');
-    if (!streamServerUrl || streamServerUrl.includes('localhost')) {
-      streamServerUrl = 'https://drag-queries-beds-pursue.trycloudflare.com';
+    if (!streamServerUrl || streamServerUrl.includes('localhost') || streamServerUrl.includes('drag-queries-beds-pursue')) {
+      streamServerUrl = DEFAULT_CCTV_TUNNEL_URL;
       localStorage.setItem('tapo_stream_server', streamServerUrl);
     }
 
@@ -3850,13 +3867,20 @@
       const promptMsg = `📹 ตั้งค่าการเชื่อมต่อ ${name} [IP: ${ip}]\n` +
         `----------------------------------------\n` +
         `🌐 เซิร์ฟเวอร์สตรีมมิ่งปัจจุบัน:\n${streamServerUrl}\n\n` +
-        `• หากเปิดผ่าน Vercel หรือนอกบ้าน: ใช้ Cloudflare Tunnel เช่น https://drag-queries-beds-pursue.trycloudflare.com\n` +
+        `• หากเปิดผ่าน Vercel หรือนอกบ้าน: ใช้ Cloudflare Tunnel เช่น https://pan-manchester-vehicle-continually.trycloudflare.com\n` +
         `• หากเปิดบนวงแลนเดียวกัน: ใช้ IP เช่น http://10.196.220.40:8088\n\n` +
         `กรอก URL เซิร์ฟเวอร์ที่ต้องการใช้งาน:`;
       const newUrl = prompt(promptMsg, streamServerUrl);
       if (newUrl && newUrl.trim()) {
-        streamServerUrl = newUrl.trim().replace(/\/+$/, '');
+        streamServerUrl = newUrl.trim().replace(/\/+$/, '').replace(/\/(snapshot|video)\/outdoor$/i, '').replace(/\/status$/i, '');
         localStorage.setItem('tapo_stream_server', streamServerUrl);
+        if (typeof ownerConfig === 'object' && ownerConfig.cctv) {
+          ownerConfig.cctv.tunnel_url = streamServerUrl;
+          ownerConfig.cctv.outdoor_url = `${streamServerUrl}/snapshot/outdoor`;
+          ownerConfig.cctv.video_url = `${streamServerUrl}/video/outdoor`;
+          ownerConfig.cctv.status_url = `${streamServerUrl}/status`;
+          if (typeof saveOwnerConfigToStorage === 'function') saveOwnerConfigToStorage();
+        }
         alert(`✅ บันทึกที่อยู่สตรีมมิ่งเรียบร้อย:\n${streamServerUrl}`);
         if (typeof startPeriodicSnapshots === 'function') startPeriodicSnapshots();
       }
@@ -4248,15 +4272,90 @@
       indoor: { isStreaming: false, snapshotInterval: null }
     };
 
+    function resolveCctvEndpoints(rawInput) {
+      const cleaned = (rawInput || DEFAULT_CCTV_TUNNEL_URL).trim().replace(/\/+$/, '');
+      const base = cleaned
+        .replace(/\/(snapshot|video)\/outdoor(\?.*)?$/i, '')
+        .replace(/\/status(\?.*)?$/i, '');
+      const isCustomDirectImg = /\.(jpg|jpeg|png|webp|mjpg|mjpeg)(\?.*)?$/i.test(cleaned) && !cleaned.includes('trycloudflare.com');
+      return {
+        tunnel_url: base,
+        status_url: `${base}/status`,
+        outdoor_url: isCustomDirectImg ? cleaned : `${base}/snapshot/outdoor`,
+        video_url: `${base}/video/outdoor`
+      };
+    }
+
+    async function checkCctvTunnelStatus(showAlert = false) {
+      const eps = resolveCctvEndpoints(ownerConfig?.cctv?.tunnel_url || ownerConfig?.cctv?.outdoor_url || streamServerUrl);
+      const badge = document.getElementById('camTunnelStatusBadge');
+      const dot = document.getElementById('camTunnelStatusDot');
+      const txt = document.getElementById('camTunnelStatusText');
+      const cmsPill = document.getElementById('cmsCctvStatusPill');
+
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 5000);
+        const res = await fetch(`${eps.status_url}?_t=${Date.now()}`, { signal: controller.signal });
+        clearTimeout(timer);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        if (data && data.status === 'ok') {
+          if (badge) {
+            badge.style.background = 'rgba(16, 185, 129, 0.14)';
+            badge.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+            badge.style.color = '#34d399';
+          }
+          if (dot) dot.style.background = '#10b981';
+          if (txt) txt.textContent = 'Tunnel Online';
+          if (cmsPill) {
+            cmsPill.style.background = 'rgba(16, 185, 129, 0.15)';
+            cmsPill.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+            cmsPill.style.color = '#34d399';
+            cmsPill.textContent = '🟢 Tunnel Online (status: ok)';
+          }
+          if (showAlert) {
+            const tsStr = data.outdoor_ts ? new Date(data.outdoor_ts).toLocaleTimeString('th-TH') : 'ล่าสุด';
+            alert(`✅ Cloudflare Tunnel ออนไลน์ปกติ!\n\n• Public URL: ${eps.tunnel_url}\n• สถานะ: ${data.status}\n• อัปเดตเฟรมกล้องล่าสุด: ${tsStr}`);
+          }
+          return true;
+        }
+      } catch (err) {
+        if (badge) {
+          badge.style.background = 'rgba(239, 68, 68, 0.14)';
+          badge.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+          badge.style.color = '#f87171';
+        }
+        if (dot) dot.style.background = '#ef4444';
+        if (txt) txt.textContent = 'Tunnel Offline';
+        if (cmsPill) {
+          cmsPill.style.background = 'rgba(239, 68, 68, 0.15)';
+          cmsPill.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+          cmsPill.style.color = '#f87171';
+          cmsPill.textContent = '🔴 Tunnel Offline';
+        }
+        if (showAlert) {
+          alert(`⚠️ ไม่สามารถติดต่อ ${eps.status_url} ได้\nกรุณาตรวจสอบว่าหน้าต่าง CMD ของ Cloudflare Tunnel บนเครื่อง Windows ยังเปิดอยู่`);
+        }
+      }
+      return false;
+    }
+
     function updateCameraSnapshot(camId) {
-      if (camStreamState[camId].isStreaming) return;
+      if (camStreamState[camId] && camStreamState[camId].isStreaming) return;
       const isOutdoor = (camId === 'outdoor');
-      const img = document.getElementById(isOutdoor ? 'camImgOutdoor' : 'camImgIndoor');
+      const img = document.getElementById(isOutdoor ? 'camImgOutdoor' : 'camImgIndoor') || document.querySelector('#camFeedOutdoor img');
       if (!img) return;
 
+      const eps = resolveCctvEndpoints(ownerConfig?.cctv?.tunnel_url || ownerConfig?.cctv?.outdoor_url || streamServerUrl);
+      const snapBase = isOutdoor ? eps.outdoor_url : `${eps.tunnel_url}/snapshot/${camId}`;
+      const sep = snapBase.includes('?') ? '&' : '?';
+      const url = `${snapBase}${sep}t=${Date.now()}`;
+
       const preloader = new Image();
-      const url = `${streamServerUrl}/snapshot/${camId}?t=${Date.now()}`;
       preloader.onload = () => {
+        if (camStreamState[camId] && camStreamState[camId].isStreaming) return;
         img.src = url;
         img.style.display = 'block';
         if (!isOutdoor) {
@@ -4268,11 +4367,13 @@
     }
 
     function startPeriodicSnapshots() {
+      const intervalMs = Math.max(10, parseInt(ownerConfig?.cctv?.refresh_interval || 60, 10)) * 1000;
+      checkCctvTunnelStatus(false);
       ['outdoor'].forEach(camId => {
         if (!camStreamState[camId].isStreaming) {
           if (camStreamState[camId].snapshotInterval) clearInterval(camStreamState[camId].snapshotInterval);
           updateCameraSnapshot(camId);
-          camStreamState[camId].snapshotInterval = setInterval(() => updateCameraSnapshot(camId), 60000); // Snap ทุก 1 นาที
+          camStreamState[camId].snapshotInterval = setInterval(() => updateCameraSnapshot(camId), intervalMs);
         }
       });
     }
@@ -4289,20 +4390,23 @@
     function toggleLiveVideo(camId) {
       const state = camStreamState[camId];
       const isOutdoor = (camId === 'outdoor');
-      const img = document.getElementById(isOutdoor ? 'camImgOutdoor' : 'camImgIndoor');
+      const img = document.getElementById(isOutdoor ? 'camImgOutdoor' : 'camImgIndoor') || document.querySelector('#camFeedOutdoor img');
       const badge = document.getElementById(isOutdoor ? 'camBadgeOutdoor' : 'camBadgeIndoor');
       const btn = document.getElementById(isOutdoor ? 'btnPlayOutdoor' : 'btnPlayIndoor');
       const text = document.getElementById(isOutdoor ? 'textPlayOutdoor' : 'textPlayIndoor');
       const icon = document.getElementById(isOutdoor ? 'iconPlayOutdoor' : 'iconPlayIndoor');
+      const eps = resolveCctvEndpoints(ownerConfig?.cctv?.tunnel_url || ownerConfig?.cctv?.outdoor_url || streamServerUrl);
 
       if (!state.isStreaming) {
-        // เริ่มสตรีมวิดีโอ 1080p On-Demand
+        // เริ่มสตรีมวิดีโอ 1080p On-Demand (/video/outdoor)
         state.isStreaming = true;
         if (state.snapshotInterval) {
           clearInterval(state.snapshotInterval);
           state.snapshotInterval = null;
         }
-        img.src = `${streamServerUrl}/video/${camId}?t=${Date.now()}`;
+        const videoUrl = isOutdoor ? eps.video_url : `${eps.tunnel_url}/video/${camId}`;
+        const sep = videoUrl.includes('?') ? '&' : '?';
+        img.src = `${videoUrl}${sep}t=${Date.now()}`;
         img.style.display = 'block';
 
         if (badge) {
@@ -4313,9 +4417,9 @@
         if (text) text.textContent = '⏹ หยุดดูสด (สลับเป็น Snapshot)';
         if (icon) icon.setAttribute('data-lucide', 'square');
       } else {
-        // สลับกลับมาโหมด Snapshot เป็นระยะ (ทุก 1 นาที)
+        // สลับกลับมาโหมด Snapshot เป็นระยะ (/snapshot/outdoor)
         state.isStreaming = false;
-        img.src = `${streamServerUrl}/snapshot/${camId}?t=${Date.now()}`;
+        updateCameraSnapshot(camId);
 
         if (badge) {
           badge.className = 'cam-badge snapshot';
@@ -4325,7 +4429,8 @@
         if (text) text.textContent = 'ดูวิดีโอสด 1080P';
         if (icon) icon.setAttribute('data-lucide', 'play');
 
-        state.snapshotInterval = setInterval(() => updateCameraSnapshot(camId), 60000); // Snap ทุก 1 นาที
+        const intervalMs = Math.max(10, parseInt(ownerConfig?.cctv?.refresh_interval || 60, 10)) * 1000;
+        state.snapshotInterval = setInterval(() => updateCameraSnapshot(camId), intervalMs);
       }
       if (window.lucide) lucide.createIcons();
     }
@@ -4452,7 +4557,10 @@
         door_switch: { visible: true, name: 'สวิตช์หน้าประตู', desc: 'RF 433 MHz', icon: 'shield-check' }
       },
       cctv: {
-        outdoor_url: '',
+        tunnel_url: 'https://pan-manchester-vehicle-continually.trycloudflare.com',
+        status_url: 'https://pan-manchester-vehicle-continually.trycloudflare.com/status',
+        outdoor_url: 'https://pan-manchester-vehicle-continually.trycloudflare.com/snapshot/outdoor',
+        video_url: 'https://pan-manchester-vehicle-continually.trycloudflare.com/video/outdoor',
         refresh_interval: 60
       },
       coords: {
@@ -4483,12 +4591,32 @@
           ownerConfig.devices = Object.assign({}, DEFAULT_OWNER_CONFIG.devices, parsed.devices || {});
           ownerConfig.cctv = Object.assign({}, DEFAULT_OWNER_CONFIG.cctv, parsed.cctv || {});
           ownerConfig.coords = Object.assign({}, DEFAULT_OWNER_CONFIG.coords, parsed.coords || {});
+
+          let shouldSave = false;
           // Auto-migrate legacy 4-digit default '1234' to new 6-digit default '515395'
           if (!parsed.pin_code || parsed.pin_code === '1234') {
             ownerConfig.pin_code = '515395';
             ownerConfig.pin_enabled = true;
-            saveOwnerConfigToStorage();
+            shouldSave = true;
           }
+          // Auto-migrate empty or old Cloudflare Tunnel URL to active tunnel
+          if (!ownerConfig.cctv.outdoor_url || ownerConfig.cctv.outdoor_url.includes('drag-queries-beds-pursue')) {
+            const eps = resolveCctvEndpoints(DEFAULT_CCTV_TUNNEL_URL);
+            ownerConfig.cctv.tunnel_url = eps.tunnel_url;
+            ownerConfig.cctv.status_url = eps.status_url;
+            ownerConfig.cctv.outdoor_url = eps.outdoor_url;
+            ownerConfig.cctv.video_url = eps.video_url;
+            shouldSave = true;
+          } else {
+            const eps = resolveCctvEndpoints(ownerConfig.cctv.outdoor_url);
+            ownerConfig.cctv.tunnel_url = eps.tunnel_url;
+            ownerConfig.cctv.status_url = eps.status_url;
+            ownerConfig.cctv.outdoor_url = eps.outdoor_url;
+            ownerConfig.cctv.video_url = eps.video_url;
+          }
+          streamServerUrl = ownerConfig.cctv.tunnel_url;
+          localStorage.setItem('tapo_stream_server', streamServerUrl);
+          if (shouldSave) saveOwnerConfigToStorage();
         } else {
           saveOwnerConfigToStorage();
         }
@@ -4534,15 +4662,16 @@
         });
       }
 
-      // 2. Apply Custom CCTV Snapshot URL if provided
+      // 2. Apply Active CCTV Snapshot & Check Tunnel Status
       if (ownerConfig.cctv && ownerConfig.cctv.outdoor_url) {
-        const outdoorImg = document.querySelector('#camFeedOutdoor img');
-        if (outdoorImg) {
-          outdoorImg.src = ownerConfig.cctv.outdoor_url;
-        }
+        const eps = resolveCctvEndpoints(ownerConfig.cctv.outdoor_url);
+        streamServerUrl = eps.tunnel_url;
+        localStorage.setItem('tapo_stream_server', streamServerUrl);
+        updateCameraSnapshot('outdoor');
+        checkCctvTunnelStatus(false);
       }
 
-      // 3. Setup CCTV Auto-Refresh Timer
+      // 3. Setup CCTV Auto-Refresh Timer (respects 1080p live video mode)
       if (cctvAutoRefreshTimer) {
         clearInterval(cctvAutoRefreshTimer);
         cctvAutoRefreshTimer = null;
@@ -4550,11 +4679,8 @@
       const intervalSec = parseInt(ownerConfig.cctv?.refresh_interval || 60, 10);
       if (intervalSec > 0 && ownerConfig.cctv?.outdoor_url) {
         cctvAutoRefreshTimer = setInterval(() => {
-          const outdoorImg = document.querySelector('#camFeedOutdoor img');
-          if (outdoorImg && ownerConfig.cctv.outdoor_url) {
-            const separator = ownerConfig.cctv.outdoor_url.includes('?') ? '&' : '?';
-            outdoorImg.src = ownerConfig.cctv.outdoor_url + separator + '_t=' + Date.now();
-          }
+          if (camStreamState?.outdoor?.isStreaming) return;
+          updateCameraSnapshot('outdoor');
         }, intervalSec * 1000);
       }
     }
@@ -5153,6 +5279,16 @@
       setTimeout(openOwnerSettingsModal, 150);
     }
 
+    function updateCctvUrlLabels(rawUrl) {
+      const eps = resolveCctvEndpoints(rawUrl || ownerConfig?.cctv?.tunnel_url || DEFAULT_CCTV_TUNNEL_URL);
+      const lblStatus = document.getElementById('lblCctvStatusUrl');
+      const lblSnap = document.getElementById('lblCctvSnapUrl');
+      const lblVideo = document.getElementById('lblCctvVideoUrl');
+      if (lblStatus) lblStatus.textContent = eps.status_url;
+      if (lblSnap) lblSnap.textContent = eps.outdoor_url;
+      if (lblVideo) lblVideo.textContent = eps.video_url;
+    }
+
     // --- Owner Settings Modal UI ---
     function openOwnerSettingsModal() {
       // 1. Populate Device Manager Tab
@@ -5161,8 +5297,14 @@
       // 2. Populate CCTV Tab
       const cctvUrlInput = document.getElementById('cfgCctvOutdoorUrl');
       const cctvIntervalSelect = document.getElementById('cfgCctvInterval');
-      if (cctvUrlInput) cctvUrlInput.value = ownerConfig.cctv?.outdoor_url || '';
+      const currentTunnel = ownerConfig.cctv?.tunnel_url || ownerConfig.cctv?.outdoor_url || DEFAULT_CCTV_TUNNEL_URL;
+      if (cctvUrlInput) {
+        cctvUrlInput.value = currentTunnel;
+        cctvUrlInput.oninput = () => updateCctvUrlLabels(cctvUrlInput.value);
+      }
+      updateCctvUrlLabels(currentTunnel);
       if (cctvIntervalSelect) cctvIntervalSelect.value = String(ownerConfig.cctv?.refresh_interval || 60);
+      checkCctvTunnelStatus(false);
 
       // 3. Populate Security Tab
       const pinToggle = document.getElementById('ownerPinToggle');
@@ -5288,7 +5430,15 @@
       // 2. CCTV
       const cctvUrlInp = document.getElementById('cfgCctvOutdoorUrl');
       const cctvIntInp = document.getElementById('cfgCctvInterval');
-      if (cctvUrlInp) ownerConfig.cctv.outdoor_url = cctvUrlInp.value.trim();
+      if (cctvUrlInp) {
+        const eps = resolveCctvEndpoints(cctvUrlInp.value.trim());
+        ownerConfig.cctv.tunnel_url = eps.tunnel_url;
+        ownerConfig.cctv.status_url = eps.status_url;
+        ownerConfig.cctv.outdoor_url = eps.outdoor_url;
+        ownerConfig.cctv.video_url = eps.video_url;
+        streamServerUrl = eps.tunnel_url;
+        localStorage.setItem('tapo_stream_server', streamServerUrl);
+      }
       if (cctvIntInp) ownerConfig.cctv.refresh_interval = parseInt(cctvIntInp.value, 10);
 
       // 3. Security
@@ -5418,17 +5568,19 @@
       const img = document.getElementById('cctvTestImg');
       if (!inp || !box || !img) return;
 
-      const url = inp.value.trim();
-      if (!url) {
+      const raw = inp.value.trim();
+      if (!raw) {
         alert('กรุณากรอก URL สตรีมหรือ Snapshot ของกล้องก่อนทดสอบ');
         return;
       }
 
+      const eps = resolveCctvEndpoints(raw);
+      updateCctvUrlLabels(raw);
       box.style.display = 'block';
-      const sep = url.includes('?') ? '&' : '?';
-      img.src = url + sep + '_test=' + Date.now();
+      const sep = eps.outdoor_url.includes('?') ? '&' : '?';
+      img.src = eps.outdoor_url + sep + '_test=' + Date.now();
       img.onerror = () => {
-        alert('ไม่สามารถโหลดภาพจาก URL นี้ได้ กรุณาตรวจสอบว่า URL ถูกต้องและรองรับ HTTPS หรือเปิดการเข้าถึง');
+        alert('ไม่สามารถโหลดภาพจาก ' + eps.outdoor_url + ' ได้ กรุณาตรวจสอบว่า Cloudflare Tunnel เปิดอยู่');
       };
     }
 
