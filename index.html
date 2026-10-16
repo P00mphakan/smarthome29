@@ -693,8 +693,9 @@
        DOCK 3: CCTV VIEW (Tapo C200 Cameras 2 ตัว)
        -------------------------------------------------------- */
     .cctv-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       gap: 20px;
       width: 100%;
       height: 100%;
@@ -715,6 +716,8 @@
       position: relative;
       overflow: hidden;
       min-height: 0;
+      width: 100%;
+      max-width: 640px;
     }
 
     .cam-header {
@@ -1649,8 +1652,8 @@
       /* Grids and camera cards */
       .devices-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; }
       .scenes-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; }
-      .cctv-container { grid-template-columns: 1fr; height: auto; }
-      .camera-card { min-height: 280px; }
+      .cctv-container { display: flex !important; flex-direction: column !important; align-items: center !important; height: auto !important; width: 100% !important; gap: 14px !important; }
+      .camera-card { min-height: 280px; max-width: 100% !important; width: 100% !important; }
 
       /* Dock Backdrop Gradient Scrim (separates floating dock from scrolling cards) */
       .dock-scrim {
@@ -2826,8 +2829,8 @@
     </div>
   </div>
 
-  <!-- Owner Settings CMS Modal -->
-  <div class="modal-overlay" id="modalOwnerSettings" onclick="if(event.target===this)closeOwnerSettingsModal()">
+  <!-- Owner Settings CMS Modal (backdrop click disabled: exit only via Save, Cancel, or ✕) -->
+  <div class="modal-overlay" id="modalOwnerSettings">
     <div class="owner-cms-card">
       
       <!-- Modal Header -->
