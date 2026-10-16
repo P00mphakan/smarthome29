@@ -1455,64 +1455,206 @@
     /* Mobile Portrait (max-width: 820px) */
     @media (max-width: 820px) {
       body { overflow-y: auto; height: auto; min-height: 100dvh; }
-      .app-viewport { height: auto; min-height: 100dvh; padding-bottom: 110px !important; }
-      .home-grid { display: flex; flex-direction: column; height: auto; }
-      .home-left-col { width: 100%; height: auto; }
-      .digital-clock { font-size: 2.8rem; }
+      .app-viewport { 
+        height: auto; 
+        min-height: 100dvh; 
+        padding: 8px 10px calc(var(--dock-height, 62px) + 36px) 10px !important; 
+        overflow-x: hidden !important;
+      }
+      .home-grid { display: flex; flex-direction: column; height: auto; gap: 10px; }
+      .home-left-col { 
+        width: 100%; 
+        height: auto; 
+        gap: 8px !important; 
+        flex-shrink: 0 !important;
+      }
+
+      /* 1. Header mobile: Compact buttons & gap to prevent right button overflow */
+      .top-header {
+        height: auto !important;
+        min-height: 40px !important;
+        gap: 4px !important;
+        margin-bottom: 6px !important;
+        padding: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      .header-left {
+        gap: 6px !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+        overflow: hidden !important;
+      }
+      .header-right {
+        gap: 4px !important;
+        flex-shrink: 0 !important;
+        align-items: center !important;
+      }
+      .icon-btn {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
+        max-width: 32px !important;
+        max-height: 32px !important;
+        aspect-ratio: 1 / 1 !important;
+        border-radius: 50% !important;
+        flex-shrink: 0 !important;
+        padding: 0 !important;
+      }
+      .icon-btn svg, .icon-btn i {
+        width: 15px !important;
+        height: 15px !important;
+      }
+      .status-pill {
+        padding: 3px 7px !important;
+        font-size: 0.62rem !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        gap: 4px !important;
+      }
+      .status-pill .pulse-dot {
+        width: 5px !important;
+        height: 5px !important;
+      }
+      .app-brand h1 {
+        font-size: 0.88rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      .app-brand span {
+        font-size: 0.6rem !important;
+        white-space: nowrap !important;
+      }
+
+      /* 2. Weather Card: Compact sizing so page 1 fits without overflowing */
+      .card-weather {
+        padding: 10px 12px !important;
+        min-height: unset !important;
+      }
+      .digital-clock {
+        font-size: 2.1rem !important;
+        line-height: 1 !important;
+      }
+      .thai-date {
+        font-size: 0.74rem !important;
+        margin-top: 2px !important;
+      }
+      .weather-3d-icon-box, .weather-3d-icon {
+        width: 36px !important;
+        height: 36px !important;
+      }
+      .weather-temp-num {
+        font-size: 1.5rem !important;
+      }
+      .weather-condition-text {
+        font-size: 0.72rem !important;
+      }
+      .weather-details-row {
+        margin-top: 5px !important;
+        padding-top: 5px !important;
+        gap: 6px !important;
+      }
+      .weather-sub-item {
+        font-size: 0.7rem !important;
+        gap: 4px !important;
+      }
+      .pm25-pill {
+        padding: 2px 6px !important;
+        font-size: 0.66rem !important;
+      }
+      .weather-forecast-strip {
+        margin-top: 5px !important;
+        padding-top: 5px !important;
+        gap: 4px !important;
+      }
+      .forecast-col {
+        padding: 2px 2px !important;
+        gap: 1px !important;
+      }
+      .forecast-day-name {
+        font-size: 0.62rem !important;
+      }
+      .forecast-icon-box {
+        width: 16px !important;
+        height: 16px !important;
+        margin: 1px 0 !important;
+      }
+      .forecast-icon-box svg, .forecast-icon-box i {
+        width: 14px !important;
+        height: 14px !important;
+      }
+      .forecast-temp-val {
+        font-size: 0.68rem !important;
+      }
+      .forecast-rain-prob {
+        font-size: 0.6rem !important;
+      }
+
+      /* 3. Voice Card & Mic Button: Compact to stay within 1 page above bottom dock */
+      .card-voice {
+        padding: 10px 12px !important;
+        min-height: unset !important;
+        flex: unset !important;
+      }
+      .voice-header {
+        margin-bottom: 2px !important;
+      }
+      .voice-title {
+        font-size: 0.8rem !important;
+        gap: 5px !important;
+      }
+      .voice-wave-container {
+        height: 36px !important;
+        margin: 3px 0 !important;
+      }
+      .voice-status-label {
+        font-size: 0.72rem !important;
+        min-height: 14px !important;
+        line-height: 1.2 !important;
+      }
+      .voice-controls {
+        margin-top: 4px !important;
+      }
+      .mic-button {
+        width: 46px !important;
+        height: 46px !important;
+        min-width: 46px !important;
+        min-height: 46px !important;
+        max-width: 46px !important;
+        max-height: 46px !important;
+      }
+      .mic-button svg, .mic-button i {
+        width: 20px !important;
+        height: 20px !important;
+      }
+
+      /* Grids and camera cards */
       .devices-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; }
       .scenes-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; }
       .cctv-container { grid-template-columns: 1fr; height: auto; }
       .camera-card { min-height: 280px; }
-      /* Header mobile perfect circle guarantee */
-      .top-header {
-        gap: 6px !important;
-        margin-bottom: 8px !important;
-      }
-      .header-left, .header-right {
-        gap: 6px !important;
-        flex-shrink: 0 !important;
-      }
-      .icon-btn {
-        width: 38px !important;
-        height: 38px !important;
-        min-width: 38px !important;
-        min-height: 38px !important;
-        max-width: 38px !important;
-        max-height: 38px !important;
-        aspect-ratio: 1 / 1 !important;
-        border-radius: 50% !important;
-        flex-shrink: 0 !important;
-      }
-      .status-pill {
-        padding: 5px 10px !important;
-        font-size: 0.7rem !important;
-        white-space: nowrap !important;
-        flex-shrink: 0 !important;
-      }
-      .app-brand h1 {
-        font-size: 1rem !important;
-      }
-      .app-brand span {
-        font-size: 0.68rem !important;
-      }
 
+      /* Dock bar */
       .dock-container {
         position: fixed !important;
-        bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
         margin: 0 auto !important;
         width: auto !important;
-        max-width: 90vw !important;
-        padding: 6px 14px !important;
+        max-width: 94vw !important;
+        padding: 6px 12px !important;
         gap: 6px !important;
+        z-index: 999 !important;
       }
       .dock-item {
-        padding: 6px 16px !important;
-        min-width: 68px !important;
+        padding: 6px 14px !important;
+        min-width: 62px !important;
       }
       .dock-item span {
-        font-size: 0.78rem !important;
+        font-size: 0.74rem !important;
       }
       .standby-giant-clock { font-size: 5rem; }
     }
@@ -2847,13 +2989,26 @@
           </div>
 
           <div class="owner-card-box" style="background: rgba(245, 158, 11, 0.05); border-color: rgba(245, 158, 11, 0.25);">
-            <strong style="color: #fbbf24; font-size: 0.95rem;">ตั้งค่าราคาตลาด Lock Screen (BTC • XAUUSD • XTIUSD)</strong>
-            <div style="font-size: 0.75rem; color: var(--text-muted);">
-              ค่าเริ่มต้นดึงราคา Real-Time ออนไลน์ฟรีอัตโนมัติ (Binance WebSocket + Swissquote MT5 Feed + Yahoo Live) • หากต้องการดึงจากเครื่อง Windows MT5 ผ่าน Tunnel สามารถใส่ URL ด้านล่างได้
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <strong style="color: #fbbf24; font-size: 0.95rem;">ราคาตลาด Lock Screen จาก MT5 Tunnel (พอร์ต 8089)</strong>
+              <span id="cmsMt5StatusPill" style="font-size: 0.74rem; padding: 4px 10px; border-radius: 99px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-weight: 600;">🟢 MT5 Tunnel Active</span>
             </div>
-            <div style="margin-top: 4px;">
-              <label style="font-size: 0.74rem; color: var(--text-muted);">MT5 Tunnel URL (เว้นว่างไว้เพื่อใช้ Real-Time Online ฟรี):</label>
-              <input type="text" class="owner-field-input" id="cfgMt5TunnelUrl" placeholder="เช่น https://mt5.yourdomain.com/quotes (เว้นว่างเพื่อใช้ API ฟรีออนไลน์)">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+              เชื่อมต่อตรงกับเครื่อง Windows MT5 ผ่าน Cloudflare Tunnel (SSE Stream + JSON API) • หากเครื่อง Windows ปิดอยู่ ระบบจะสลับไปใช้ Free Online API ให้อัตโนมัติ
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
+              <label style="font-size: 0.74rem; color: var(--text-muted);">MT5 Cloudflare Tunnel Base URL:</label>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <input type="text" class="owner-field-input" id="cfgMt5TunnelUrl" style="flex: 1; min-width: 240px;" placeholder="เช่น https://approximately-guarantee-naturally-four.trycloudflare.com">
+                <button class="owner-btn" onclick="checkMt5TunnelStatus(true)" style="background: rgba(245, 158, 11, 0.18); border-color: rgba(245, 158, 11, 0.4); color: #fde68a;">
+                  <i data-lucide="activity" style="width:15px;"></i> เช็คราคาสด (/prices)
+                </button>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-dim); line-height: 1.5; background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
+                <div>• <strong>JSON API:</strong> <span id="lblMt5PricesUrl" style="color: #38bdf8;">https://approximately-guarantee-naturally-four.trycloudflare.com/prices</span></div>
+                <div>• <strong>SSE Stream:</strong> <span id="lblMt5StreamUrl" style="color: #34d399;">https://approximately-guarantee-naturally-four.trycloudflare.com/stream</span></div>
+                <div>• <strong>หน้า Widget:</strong> <span id="lblMt5WidgetUrl" style="color: #fbbf24;">https://approximately-guarantee-naturally-four.trycloudflare.com/widget</span></div>
+              </div>
             </div>
           </div>
 
@@ -4539,6 +4694,8 @@
     const OWNER_STORAGE_KEY = 'smarthome29_owner_config';
     const SECURITY_STATE_KEY = 'smarthome29_security_state';
 
+    const DEFAULT_MT5_TUNNEL_URL = 'https://approximately-guarantee-naturally-four.trycloudflare.com';
+
     const DEFAULT_OWNER_CONFIG = {
       pin_enabled: true,
       pin_code: '515395',
@@ -4546,6 +4703,7 @@
       telegram_chat_id: '',
       face_signature: null,
       face_enrolled_at: null,
+      mt5_tunnel_url: 'https://approximately-guarantee-naturally-four.trycloudflare.com',
       devices: {
         bedroom:     { visible: true, name: 'ไฟห้องนอน', desc: 'Tuya Smart', icon: 'bed' },
         kitchen:     { visible: true, name: 'ไฟห้องครัว', desc: 'Tuya Smart', icon: 'utensils' },
@@ -4598,6 +4756,11 @@
           if (!parsed.pin_code || parsed.pin_code === '1234') {
             ownerConfig.pin_code = '515395';
             ownerConfig.pin_enabled = true;
+            shouldSave = true;
+          }
+          // Auto-populate active MT5 Cloudflare Tunnel if empty
+          if (!ownerConfig.mt5_tunnel_url) {
+            ownerConfig.mt5_tunnel_url = DEFAULT_MT5_TUNNEL_URL;
             shouldSave = true;
           }
           // Auto-migrate empty or old Cloudflare Tunnel URL to active tunnel
@@ -5341,9 +5504,15 @@
       const latInput = document.getElementById('cfgLatInput');
       const lonInput = document.getElementById('cfgLonInput');
       const mt5Input = document.getElementById('cfgMt5TunnelUrl');
+      const curMt5 = ownerConfig.mt5_tunnel_url || DEFAULT_MT5_TUNNEL_URL;
       if (latInput) latInput.value = ownerConfig.coords?.lat || 18.7904;
       if (lonInput) lonInput.value = ownerConfig.coords?.lon || 98.9847;
-      if (mt5Input) mt5Input.value = ownerConfig.mt5_tunnel_url || '';
+      if (mt5Input) {
+        mt5Input.value = curMt5;
+        mt5Input.oninput = () => updateMt5UrlLabels(mt5Input.value);
+      }
+      updateMt5UrlLabels(curMt5);
+      checkMt5TunnelStatus(false);
 
       // Open Modal and switch to Devices tab
       switchOwnerTab('devices');
@@ -5464,12 +5633,16 @@
       const mt5Inp = document.getElementById('cfgMt5TunnelUrl');
       if (latInp && !isNaN(parseFloat(latInp.value))) ownerConfig.coords.lat = parseFloat(latInp.value);
       if (lonInp && !isNaN(parseFloat(lonInp.value))) ownerConfig.coords.lon = parseFloat(lonInp.value);
-      if (mt5Inp) ownerConfig.mt5_tunnel_url = mt5Inp.value.trim();
+      if (mt5Inp) {
+        const mt5Eps = resolveMt5Endpoints(mt5Inp.value.trim());
+        ownerConfig.mt5_tunnel_url = mt5Eps.base_url;
+      }
 
       // Save to Storage and Apply to UI
       saveOwnerConfigToStorage();
       applyOwnerConfigToDashboard();
-      fetchRealtimeMarketData();
+      initMt5SseStream();
+      fetchRealtimeMarketData(true);
       closeOwnerSettingsModal();
 
       // Feedback animation on settings button
@@ -5631,8 +5804,33 @@
 
     // ========================================================
     // 11. LOCK SCREEN REAL-TIME MARKET TICKER (BTC, XAUUSD, XTIUSD)
+    //     Primary: Windows MT5 Cloudflare Tunnel (Port 8089: /stream & /prices)
+    //     Fallback: Free Real-Time Online (Swissquote MT5 + Yahoo + Binance WS)
     // ========================================================
     const lastMarketPrices = { BTC: 0, XAUUSD: 0, XTIUSD: 0 };
+    let mt5EventSource = null;
+    let lastMt5TickAt = 0;
+
+    function resolveMt5Endpoints(rawInput) {
+      const cleaned = (rawInput || DEFAULT_MT5_TUNNEL_URL).trim().replace(/\/+$/, '');
+      const base = cleaned.replace(/\/(prices|stream|widget)(\?.*)?$/i, '');
+      return {
+        base_url: base,
+        prices_url: `${base}/prices`,
+        stream_url: `${base}/stream`,
+        widget_url: `${base}/widget`
+      };
+    }
+
+    function updateMt5UrlLabels(rawUrl) {
+      const eps = resolveMt5Endpoints(rawUrl || ownerConfig?.mt5_tunnel_url || DEFAULT_MT5_TUNNEL_URL);
+      const lblPrices = document.getElementById('lblMt5PricesUrl');
+      const lblStream = document.getElementById('lblMt5StreamUrl');
+      const lblWidget = document.getElementById('lblMt5WidgetUrl');
+      if (lblPrices) lblPrices.textContent = eps.prices_url;
+      if (lblStream) lblStream.textContent = eps.stream_url;
+      if (lblWidget) lblWidget.textContent = eps.widget_url;
+    }
 
     function updateMarketCardItem(sym, price, changePct) {
       if (!price || isNaN(price) || price <= 0) return;
@@ -5664,20 +5862,135 @@
       }
     }
 
-    async function fetchRealtimeMarketData() {
+    function applyMt5SymbolsPayload(payload) {
+      if (!payload || typeof payload !== 'object') return false;
+      const syms = payload.symbols || payload.data || payload;
+      const btcObj = syms.BTCUSD || syms.BTC;
+      const xauObj = syms.XAUUSD;
+      const xtiObj = syms.XTIUSD || syms.WTIUSD;
+
+      let updated = false;
+      if (btcObj && (btcObj.price || btcObj.bid)) {
+        updateMarketCardItem('BTC', Number(btcObj.price ?? btcObj.bid), Number(btcObj.change_pct ?? btcObj.changePct ?? 0));
+        updated = true;
+      }
+      if (xauObj && (xauObj.price || xauObj.bid)) {
+        updateMarketCardItem('XAUUSD', Number(xauObj.price ?? xauObj.bid), Number(xauObj.change_pct ?? xauObj.changePct ?? 0));
+        updated = true;
+      }
+      if (xtiObj && (xtiObj.price || xtiObj.bid)) {
+        updateMarketCardItem('XTIUSD', Number(xtiObj.price ?? xtiObj.bid), Number(xtiObj.change_pct ?? xtiObj.changePct ?? 0));
+        updated = true;
+      }
+      if (updated) {
+        lastMt5TickAt = Date.now();
+        const pill = document.getElementById('cmsMt5StatusPill');
+        if (pill) {
+          pill.style.background = 'rgba(16, 185, 129, 0.15)';
+          pill.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+          pill.style.color = '#34d399';
+          pill.textContent = '🟢 MT5 Tunnel Live (Port 8089)';
+        }
+      }
+      return updated;
+    }
+
+    async function checkMt5TunnelStatus(showAlert = false) {
+      const inp = document.getElementById('cfgMt5TunnelUrl');
+      const rawUrl = (inp && inp.value.trim()) ? inp.value.trim() : (ownerConfig.mt5_tunnel_url || DEFAULT_MT5_TUNNEL_URL);
+      const eps = resolveMt5Endpoints(rawUrl);
+      updateMt5UrlLabels(rawUrl);
+      const pill = document.getElementById('cmsMt5StatusPill');
+
       try {
-        const mt5Url = ownerConfig.mt5_tunnel_url || '';
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4500);
+        const res = await fetch(`${eps.prices_url}?_t=${Date.now()}`, { signal: controller.signal });
+        clearTimeout(timer);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (applyMt5SymbolsPayload(data)) {
+          if (showAlert) {
+            const s = data.symbols || {};
+            alert(
+              `✅ เชื่อมต่อ MT5 Tunnel สำเร็จ! (${eps.base_url})\n\n` +
+              `• BTCUSD: $${s.BTCUSD?.price || '--'} (${s.BTCUSD?.change_pct >= 0 ? '+' : ''}${s.BTCUSD?.change_pct ?? 0}%)\n` +
+              `• XAUUSD: $${s.XAUUSD?.price || '--'} (${s.XAUUSD?.change_pct >= 0 ? '+' : ''}${s.XAUUSD?.change_pct ?? 0}%)\n` +
+              `• XTIUSD: $${s.XTIUSD?.price || '--'} (${s.XTIUSD?.change_pct >= 0 ? '+' : ''}${s.XTIUSD?.change_pct ?? 0}%)`
+            );
+          }
+          return true;
+        }
+      } catch (err) {
+        if (pill) {
+          pill.style.background = 'rgba(245, 158, 11, 0.15)';
+          pill.style.borderColor = 'rgba(245, 158, 11, 0.35)';
+          pill.style.color = '#fbbf24';
+          pill.textContent = '🟡 Fallback Online API';
+        }
+        if (showAlert) {
+          alert(`⚠️ ไม่สามารถดึงข้อมูลตรงจาก ${eps.prices_url} ได้ ระบบจะสลับไปใช้ราคา Real-Time Online ฟรีให้อัตโนมัติ`);
+        }
+      }
+      return false;
+    }
+
+    function initMt5SseStream() {
+      if (mt5EventSource) {
+        try { mt5EventSource.close(); } catch (e) {}
+        mt5EventSource = null;
+      }
+      const rawUrl = ownerConfig.mt5_tunnel_url || DEFAULT_MT5_TUNNEL_URL;
+      if (!rawUrl || !rawUrl.startsWith('http')) return;
+      const eps = resolveMt5Endpoints(rawUrl);
+
+      try {
+        mt5EventSource = new EventSource(eps.stream_url);
+        mt5EventSource.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            applyMt5SymbolsPayload(data);
+          } catch (e) {}
+        };
+        mt5EventSource.onerror = () => {
+          try { mt5EventSource.close(); } catch (e) {}
+          mt5EventSource = null;
+          setTimeout(initMt5SseStream, 10000);
+        };
+      } catch (e) {}
+    }
+
+    async function fetchRealtimeMarketData(forceFetch = false) {
+      // If MT5 SSE stream delivered a fresh tick within the last 4 seconds, no need to poll
+      if (!forceFetch && (Date.now() - lastMt5TickAt < 4000)) return;
+
+      const rawUrl = ownerConfig.mt5_tunnel_url || DEFAULT_MT5_TUNNEL_URL;
+      const eps = resolveMt5Endpoints(rawUrl);
+
+      // 1. Try Direct Client-Side Fetch from MT5 Cloudflare Tunnel (/prices)
+      if (eps.prices_url && eps.prices_url.startsWith('http')) {
+        try {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 3000);
+          const directRes = await fetch(`${eps.prices_url}?_t=${Date.now()}`, { signal: controller.signal });
+          clearTimeout(timer);
+          if (directRes.ok) {
+            const directJson = await directRes.json();
+            if (applyMt5SymbolsPayload(directJson)) return;
+          }
+        } catch (e) {}
+      }
+
+      // 2. Fallback to Vercel Serverless Backend (/api/control -> MT5 Tunnel or Swissquote + Yahoo)
+      try {
         const res = await fetch(API_CONTROL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'market_prices', mt5_url: mt5Url })
+          body: JSON.stringify({ action: 'market_prices', mt5_url: eps.base_url })
         });
         const json = await res.json();
         if (json && json.success && json.data) {
-          const d = json.data;
-          if (d.BTC && d.BTC.price) updateMarketCardItem('BTC', d.BTC.price, d.BTC.changePct);
-          if (d.XAUUSD && d.XAUUSD.price) updateMarketCardItem('XAUUSD', d.XAUUSD.price, d.XAUUSD.changePct);
-          if (d.XTIUSD && d.XTIUSD.price) updateMarketCardItem('XTIUSD', d.XTIUSD.price, d.XTIUSD.changePct);
+          applyMt5SymbolsPayload(json.data);
         }
       } catch (e) {}
     }
@@ -5687,7 +6000,8 @@
         const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
         ws.onmessage = (event) => {
           try {
-            if (ownerConfig.mt5_tunnel_url) return; // Skip if user explicitly set MT5 tunnel override
+            // Only use Binance fallback if MT5 Tunnel hasn't ticked in the last 12 seconds
+            if (Date.now() - lastMt5TickAt < 12000) return;
             const msg = JSON.parse(event.data);
             if (msg && msg.c) {
               const livePrice = parseFloat(msg.c);
@@ -5703,9 +6017,10 @@
     }
 
     function initMarketTickerWidget() {
-      fetchRealtimeMarketData();
-      setInterval(fetchRealtimeMarketData, 5000); // Refresh XAUUSD & XTIUSD every 5 seconds
-      initBinanceRealtimeWebSocket();            // Sub-second live WebSocket stream for BTC
+      initMt5SseStream();                        // Real-time SSE push stream (/stream) from Windows MT5
+      fetchRealtimeMarketData(true);             // Immediate initial load from /prices
+      setInterval(() => fetchRealtimeMarketData(false), 5000); // Polling backup every 5s
+      initBinanceRealtimeWebSocket();            // Automatic fallback WebSocket if MT5 is offline
     }
 
     // Initialize Lucide Icons, Status Sync, Atmosphere & Market Ticker

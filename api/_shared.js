@@ -453,24 +453,52 @@ async function fetchSwissquoteSpot(pairPath) {
   return null;
 }
 
+const DEFAULT_MT5_TUNNEL_BASE = 'https://approximately-guarantee-naturally-four.trycloudflare.com';
+
 async function getRealtimeMarketPrices(mt5TunnelUrl = '') {
-  // 1. Optional Custom Windows MT5 Tunnel Override (if user provides one and it responds)
-  if (mt5TunnelUrl && mt5TunnelUrl.startsWith('http')) {
+  // 1. Primary: Windows MT5 Cloudflare Tunnel (Port 8089 -> /prices)
+  const rawBase = (mt5TunnelUrl || DEFAULT_MT5_TUNNEL_BASE).trim().replace(/\/+$/, '');
+  if (rawBase && rawBase.startsWith('http')) {
+    const cleanBase = rawBase.replace(/\/(prices|stream|widget)(\?.*)?$/i, '');
+    const pricesUrl = `${cleanBase}/prices`;
     try {
-      const tRes = await fetch(mt5TunnelUrl, { signal: AbortSignal.timeout(2500) });
-      const tData = await tRes.json();
-      if (tData && (tData.BTC || tData.XAUUSD || tData.data)) {
-        return {
-          success: true,
-          source: 'mt5_tunnel',
-          timestamp: Date.now(),
-          data: tData.data || tData
-        };
+      const tRes = await fetch(pricesUrl, { signal: AbortSignal.timeout(3000) });
+      if (tRes.ok) {
+        const tData = await tRes.json();
+        const syms = tData?.symbols || tData?.data || tData;
+        const btcObj = syms?.BTCUSD || syms?.BTC;
+        const xauObj = syms?.XAUUSD;
+        const xtiObj = syms?.XTIUSD || syms?.WTIUSD;
+        if (btcObj || xauObj || xtiObj) {
+          return {
+            success: true,
+            source: 'mt5_tunnel',
+            tunnel_url: cleanBase,
+            timestamp: tData?.updated_at || Date.now(),
+            data: {
+              BTC: btcObj ? {
+                symbol: 'BTC',
+                price: Number(btcObj.price ?? btcObj.bid ?? 0),
+                changePct: Number(btcObj.change_pct ?? btcObj.changePct ?? 0)
+              } : null,
+              XAUUSD: xauObj ? {
+                symbol: 'XAUUSD',
+                price: Number(xauObj.price ?? xauObj.bid ?? 0),
+                changePct: Number(xauObj.change_pct ?? xauObj.changePct ?? 0)
+              } : null,
+              XTIUSD: xtiObj ? {
+                symbol: 'XTIUSD',
+                price: Number(xtiObj.price ?? xtiObj.bid ?? 0),
+                changePct: Number(xtiObj.change_pct ?? xtiObj.changePct ?? 0)
+              } : null
+            }
+          };
+        }
       }
     } catch (e) {}
   }
 
-  // 2. Free Real-Time Online Multi-Source Feed (Swissquote MT5 Feed + Yahoo Finance Live v8)
+  // 2. Fallback: Free Real-Time Online Multi-Source Feed (Swissquote MT5 Feed + Yahoo Finance Live v8)
   const [btcYahoo, goldYahoo, oilYahoo, goldSpot, oilSpot] = await Promise.allSettled([
     fetchYahooQuote('BTC-USD'),
     fetchYahooQuote('GC=F'),
