@@ -4,6 +4,7 @@ const {
   triggerScene,
   getAllStatus,
   tuyaRequest,
+  sendTelegramSecurityAlert,
   SCENES
 } = require('./_shared');
 
@@ -29,6 +30,17 @@ module.exports = async (req, res) => {
     if (action === 'discover') {
       const discoverHandler = require('./discover');
       return await discoverHandler(req, res);
+    }
+
+    // 0.1 Telegram Security Alert
+    if (action === 'telegram_alert') {
+      const alertResult = await sendTelegramSecurityAlert({
+        message: input.message,
+        chatId: input.chat_id,
+        photoBase64: input.photo_base64,
+        customToken: input.bot_token
+      });
+      return res.status(200).json(alertResult);
     }
 
     // 1. Get Status (Sync all devices)

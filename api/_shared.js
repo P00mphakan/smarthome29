@@ -333,6 +333,88 @@ function parseVoiceCommand(rawText) {
   return null; // Not matched in fast-path
 }
 
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8930232874:AAGlSTYpx7Y9HWpF-jRu9ez1A9RAvc8Q7hE';
+
+async function sendTelegramSecurityAlert({ message, chatId, photoBase64, customToken } = {}) {
+  const token = (customToken || TELEGRAM_BOT_TOKEN).trim();
+  const targetChatIds = new Set();
+
+  if (chatId && String(chatId).trim()) {
+    targetChatIds.add(String(chatId).trim());
+  }
+
+  // Auto-discover chat_ids from getUpdates so homeowner doesn't even need to manually look up chat_id
+  try {
+    const updRes = await fetch(`https://api.telegram.org/bot${token}/getUpdates?limit=50`);
+    const updData = await updRes.json();
+    if (updData && updData.ok && Array.isArray(updData.result)) {
+      updData.result.forEach(u => {
+        const cid = u.message?.chat?.id || u.edited_message?.chat?.id || u.callback_query?.message?.chat?.id || u.my_chat_member?.chat?.id;
+        if (cid) targetChatIds.add(String(cid));
+      });
+    }
+  } catch (e) {}
+
+  const chatList = Array.from(targetChatIds);
+  if (chatList.length === 0) {
+    return {
+      success: false,
+      need_start: true,
+      bot_username: 'hermes_poalxzodmm54xkzh_bot',
+      msg: 'กรุณากด Start บอท @hermes_poalxzodmm54xkzh_bot ในแอป Telegram ครั้งแรกเพื่อให้บอทรู้จัก Chat ID ของคุณ'
+    };
+  }
+
+  const results = [];
+  for (const cid of chatList) {
+    try {
+      let sentPhoto = false;
+      if (photoBase64 && photoBase64.startsWith('data:image')) {
+        try {
+          const base64Data = photoBase64.split(',')[1];
+          const buffer = Buffer.from(base64Data, 'base64');
+          const form = new FormData();
+          form.append('chat_id', cid);
+          form.append('caption', message || '🚨 แจ้งเตือนความปลอดภัย Smart Home 2/9');
+          const blob = new Blob([buffer], { type: 'image/jpeg' });
+          form.append('photo', blob, 'security_capture.jpg');
+
+          const pRes = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST',
+            body: form
+          });
+          const pJson = await pRes.json();
+          if (pJson && pJson.ok) {
+            sentPhoto = true;
+            results.push({ chat_id: cid, type: 'photo', ok: true });
+          }
+        } catch (pe) {}
+      }
+
+      if (!sentPhoto) {
+        const mRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: cid,
+            text: message || '🚨 แจ้งเตือนความปลอดภัย Smart Home 2/9'
+          })
+        });
+        const mJson = await mRes.json();
+        results.push({ chat_id: cid, type: 'text', ok: Boolean(mJson && mJson.ok) });
+      }
+    } catch (err) {
+      results.push({ chat_id: cid, error: err.message });
+    }
+  }
+
+  return {
+    success: results.some(r => r.ok),
+    chat_ids: chatList,
+    results
+  };
+}
+
 module.exports = {
   DEVICES,
   SCENES,
@@ -343,5 +425,7 @@ module.exports = {
   triggerScene,
   getAllStatus,
   parseVoiceCommand,
+  sendTelegramSecurityAlert,
+  TELEGRAM_BOT_TOKEN,
   N8N_FALLBACK_URL
 };
