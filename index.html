@@ -1058,6 +1058,9 @@
     /* ========================================================
        4. BOTTOM FLOATING DOCK (Exact Navigation from Image 1)
        ======================================================== */
+    .dock-scrim {
+      display: none;
+    }
     .dock-container {
       position: fixed !important;
       bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
@@ -1458,7 +1461,7 @@
       .app-viewport { 
         height: auto; 
         min-height: 100dvh; 
-        padding: 8px 10px calc(var(--dock-height, 62px) + 36px) 10px !important; 
+        padding: 8px 10px calc(var(--dock-height, 62px) + 70px + env(safe-area-inset-bottom, 0px)) 10px !important; 
         overflow-x: hidden !important;
       }
       .home-grid { display: flex; flex-direction: column; height: auto; gap: 10px; }
@@ -1528,18 +1531,31 @@
         white-space: nowrap !important;
       }
 
-      /* 2. Weather Card: Compact sizing so page 1 fits without overflowing */
+      /* 2. Weather Card: Clock & Date vertically centered & balanced */
       .card-weather {
-        padding: 10px 12px !important;
+        padding: 12px 14px 10px 14px !important;
         min-height: unset !important;
       }
+      .weather-clock-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+      .weather-clock-row > div:first-child {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        padding-top: 5px !important;
+      }
       .digital-clock {
-        font-size: 2.1rem !important;
-        line-height: 1 !important;
+        font-size: 2.15rem !important;
+        line-height: 1.05 !important;
+        letter-spacing: -0.03em !important;
       }
       .thai-date {
         font-size: 0.74rem !important;
-        margin-top: 2px !important;
+        margin-top: 4px !important;
+        line-height: 1.25 !important;
       }
       .weather-3d-icon-box, .weather-3d-icon {
         width: 36px !important;
@@ -1636,6 +1652,30 @@
       .cctv-container { grid-template-columns: 1fr; height: auto; }
       .camera-card { min-height: 280px; }
 
+      /* Dock Backdrop Gradient Scrim (separates floating dock from scrolling cards) */
+      .dock-scrim {
+        display: block !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100vw !important;
+        height: calc(var(--dock-height, 62px) + 56px + env(safe-area-inset-bottom, 0px)) !important;
+        background: linear-gradient(to top, 
+          #030712 0%, 
+          rgba(3, 7, 18, 0.98) 35%, 
+          rgba(5, 11, 24, 0.85) 60%, 
+          rgba(6, 13, 28, 0.45) 82%, 
+          transparent 100%
+        ) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%) !important;
+        mask-image: linear-gradient(to top, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%) !important;
+        pointer-events: none !important;
+        z-index: 998 !important;
+      }
+
       /* Dock bar */
       .dock-container {
         position: fixed !important;
@@ -1647,7 +1687,12 @@
         max-width: 94vw !important;
         padding: 6px 12px !important;
         gap: 6px !important;
-        z-index: 999 !important;
+        z-index: 1000 !important;
+        background: rgba(14, 24, 44, 0.94) !important;
+        backdrop-filter: blur(28px) !important;
+        -webkit-backdrop-filter: blur(28px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 20px rgba(0, 210, 255, 0.12) !important;
       }
       .dock-item {
         padding: 6px 14px !important;
@@ -2452,8 +2497,9 @@
   </div><!-- /app-viewport -->
 
   <!-- ========================================================
-       4. BOTTOM FLOATING DOCK (Navigation)
+       4. BOTTOM FLOATING DOCK (Navigation) & GRADIENT SCRIM
        ======================================================== -->
+  <div class="dock-scrim" aria-hidden="true"></div>
   <nav class="dock-container">
     <div class="dock-item active" id="dock-home" onclick="switchDockTab('home')">
       <i data-lucide="home"></i>
