@@ -2916,11 +2916,11 @@
             
             <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
               <label style="font-size: 0.78rem; color: var(--text-muted);">Cloudflare Tunnel Public URL หรือ Snapshot URL:</label>
-              <input type="text" class="owner-field-input" id="cfgCctvOutdoorUrl" placeholder="เช่น https://pan-manchester-vehicle-continually.trycloudflare.com">
+              <input type="text" class="owner-field-input" id="cfgCctvOutdoorUrl" placeholder="เช่น https://persian-likely-conditioning-hill.trycloudflare.com">
               <div style="font-size: 0.72rem; color: var(--text-dim); line-height: 1.5; background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
-                <div>• <strong>เช็คสถานะ:</strong> <span id="lblCctvStatusUrl" style="color: #38bdf8;">https://pan-manchester-vehicle-continually.trycloudflare.com/status</span></div>
-                <div>• <strong>ดูภาพ Snapshot:</strong> <span id="lblCctvSnapUrl" style="color: #34d399;">https://pan-manchester-vehicle-continually.trycloudflare.com/snapshot/outdoor</span></div>
-                <div>• <strong>ดูวิดีโอสด 1080p:</strong> <span id="lblCctvVideoUrl" style="color: #c084fc;">https://pan-manchester-vehicle-continually.trycloudflare.com/video/outdoor</span></div>
+                <div>• <strong>เช็คสถานะ:</strong> <span id="lblCctvStatusUrl" style="color: #38bdf8;">https://persian-likely-conditioning-hill.trycloudflare.com/status</span></div>
+                <div>• <strong>ดูภาพ Snapshot:</strong> <span id="lblCctvSnapUrl" style="color: #34d399;">https://persian-likely-conditioning-hill.trycloudflare.com/snapshot/outdoor</span></div>
+                <div>• <strong>ดูวิดีโอสด 1080p:</strong> <span id="lblCctvVideoUrl" style="color: #c084fc;">https://persian-likely-conditioning-hill.trycloudflare.com/video/outdoor</span></div>
               </div>
             </div>
 
@@ -4055,9 +4055,9 @@
       }
     }
 
-    const DEFAULT_CCTV_TUNNEL_URL = 'https://pan-manchester-vehicle-continually.trycloudflare.com';
+    const DEFAULT_CCTV_TUNNEL_URL = 'https://persian-likely-conditioning-hill.trycloudflare.com';
     let streamServerUrl = localStorage.getItem('tapo_stream_server');
-    if (!streamServerUrl || streamServerUrl.includes('localhost') || streamServerUrl.includes('drag-queries-beds-pursue')) {
+    if (!streamServerUrl || streamServerUrl.includes('localhost') || streamServerUrl.includes('drag-queries-beds-pursue') || streamServerUrl.includes('pan-manchester-vehicle-continually')) {
       streamServerUrl = DEFAULT_CCTV_TUNNEL_URL;
       localStorage.setItem('tapo_stream_server', streamServerUrl);
     }
@@ -4069,7 +4069,7 @@
       const promptMsg = `📹 ตั้งค่าการเชื่อมต่อ ${name} [IP: ${ip}]\n` +
         `----------------------------------------\n` +
         `🌐 เซิร์ฟเวอร์สตรีมมิ่งปัจจุบัน:\n${streamServerUrl}\n\n` +
-        `• หากเปิดผ่าน Vercel หรือนอกบ้าน: ใช้ Cloudflare Tunnel เช่น https://pan-manchester-vehicle-continually.trycloudflare.com\n` +
+        `• หากเปิดผ่าน Vercel หรือนอกบ้าน: ใช้ Cloudflare Tunnel เช่น https://persian-likely-conditioning-hill.trycloudflare.com\n` +
         `• หากเปิดบนวงแลนเดียวกัน: ใช้ IP เช่น http://10.196.220.40:8088\n\n` +
         `กรอก URL เซิร์ฟเวอร์ที่ต้องการใช้งาน:`;
       const newUrl = prompt(promptMsg, streamServerUrl);
@@ -4762,10 +4762,10 @@
         door_switch: { visible: true, name: 'สวิตช์หน้าประตู', desc: 'RF 433 MHz', icon: 'shield-check' }
       },
       cctv: {
-        tunnel_url: 'https://pan-manchester-vehicle-continually.trycloudflare.com',
-        status_url: 'https://pan-manchester-vehicle-continually.trycloudflare.com/status',
-        outdoor_url: 'https://pan-manchester-vehicle-continually.trycloudflare.com/snapshot/outdoor',
-        video_url: 'https://pan-manchester-vehicle-continually.trycloudflare.com/video/outdoor',
+        tunnel_url: 'https://persian-likely-conditioning-hill.trycloudflare.com',
+        status_url: 'https://persian-likely-conditioning-hill.trycloudflare.com/status',
+        outdoor_url: 'https://persian-likely-conditioning-hill.trycloudflare.com/snapshot/outdoor',
+        video_url: 'https://persian-likely-conditioning-hill.trycloudflare.com/video/outdoor',
         refresh_interval: 60
       },
       coords: {
@@ -4810,7 +4810,9 @@
             shouldSave = true;
           }
           // Auto-migrate empty or old Cloudflare Tunnel URL to active tunnel
-          if (!ownerConfig.cctv.outdoor_url || ownerConfig.cctv.outdoor_url.includes('drag-queries-beds-pursue')) {
+          if (!ownerConfig.cctv.outdoor_url || 
+              ownerConfig.cctv.outdoor_url.includes('drag-queries-beds-pursue') || 
+              ownerConfig.cctv.outdoor_url.includes('pan-manchester-vehicle-continually')) {
             const eps = resolveCctvEndpoints(DEFAULT_CCTV_TUNNEL_URL);
             ownerConfig.cctv.tunnel_url = eps.tunnel_url;
             ownerConfig.cctv.status_url = eps.status_url;
@@ -5691,12 +5693,30 @@
       fetchRealtimeMarketData(true);
       closeOwnerSettingsModal();
 
-      // Feedback animation on settings button
+      // Feedback animation on settings button & toast notification
       const setBtn = document.querySelector('.icon-btn[onclick="requestOpenOwnerSettings()"]');
       if (setBtn) {
         setBtn.style.transform = 'rotate(180deg)';
         setTimeout(() => setBtn.style.transform = '', 300);
       }
+      showToast('✓ บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว');
+    }
+
+    function showToast(msg, duration = 2800) {
+      let toast = document.getElementById('appToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'appToast';
+        toast.style.cssText = 'position:fixed;bottom:85px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(16,185,129,0.95);color:#ffffff;padding:10px 22px;border-radius:30px;font-size:0.84rem;font-weight:600;z-index:99999;box-shadow:0 12px 28px rgba(0,0,0,0.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:all 0.3s cubic-bezier(0.16,1,0.3,1);pointer-events:none;opacity:0;white-space:nowrap;';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+      }, duration);
     }
 
     // --- Cloud Auto-Discovery (Tuya & eWeLink) ---
