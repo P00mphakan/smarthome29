@@ -5,6 +5,7 @@ const {
   getAllStatus,
   tuyaRequest,
   sendTelegramSecurityAlert,
+  getRealtimeMarketPrices,
   SCENES
 } = require('./_shared');
 
@@ -41,6 +42,13 @@ module.exports = async (req, res) => {
         customToken: input.bot_token
       });
       return res.status(200).json(alertResult);
+    }
+
+    // 0.2 Real-Time Market Prices (BTC, XAUUSD, XTIUSD)
+    if (action === 'market_prices') {
+      const mt5Url = input.mt5_url || (req.query && req.query.mt5_url) || '';
+      const marketData = await getRealtimeMarketPrices(mt5Url);
+      return res.status(200).json(marketData);
     }
 
     // 1. Get Status (Sync all devices)

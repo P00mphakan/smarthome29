@@ -415,6 +415,108 @@ async function sendTelegramSecurityAlert({ message, chatId, photoBase64, customT
   };
 }
 
+async function fetchYahooQuote(symbol) {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1m&range=1d`;
+  const res = await fetch(url, {
+    headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' }
+  });
+  const data = await res.json();
+  const meta = data?.chart?.result?.[0]?.meta;
+  if (!meta || typeof meta.regularMarketPrice !== 'number') return null;
+
+  const price = meta.regularMarketPrice;
+  const prev = meta.chartPreviousClose || meta.previousClose || price;
+  let changePct = typeof meta.regularMarketChangePercent === 'number'
+    ? meta.regularMarketChangePercent
+    : (prev ? ((price - prev) / prev) * 100 : 0);
+
+  return {
+    price: Number(price.toFixed(2)),
+    prevClose: Number(prev.toFixed(2)),
+    changePct: Number(changePct.toFixed(2))
+  };
+}
+
+async function fetchSwissquoteSpot(pairPath) {
+  const url = `https://forex-data-feed.swissquote.com/public-quotes/bboquotes/instrument/${pairPath}`;
+  const res = await fetch(url, {
+    headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' }
+  });
+  const arr = await res.json();
+  const quotes = arr?.[0]?.spreadProfilePrices;
+  if (Array.isArray(quotes) && quotes.length > 0) {
+    const q = quotes.find(item => item.spreadProfile === 'elite' || item.spreadProfile === 'prime') || quotes[0];
+    if (typeof q.bid === 'number' && typeof q.ask === 'number') {
+      return Number(((q.bid + q.ask) / 2).toFixed(2));
+    }
+  }
+  return null;
+}
+
+async function getRealtimeMarketPrices(mt5TunnelUrl = '') {
+  // 1. Optional Custom Windows MT5 Tunnel Override (if user provides one and it responds)
+  if (mt5TunnelUrl && mt5TunnelUrl.startsWith('http')) {
+    try {
+      const tRes = await fetch(mt5TunnelUrl, { signal: AbortSignal.timeout(2500) });
+      const tData = await tRes.json();
+      if (tData && (tData.BTC || tData.XAUUSD || tData.data)) {
+        return {
+          success: true,
+          source: 'mt5_tunnel',
+          timestamp: Date.now(),
+          data: tData.data || tData
+        };
+      }
+    } catch (e) {}
+  }
+
+  // 2. Free Real-Time Online Multi-Source Feed (Swissquote MT5 Feed + Yahoo Finance Live v8)
+  const [btcYahoo, goldYahoo, oilYahoo, goldSpot, oilSpot] = await Promise.allSettled([
+    fetchYahooQuote('BTC-USD'),
+    fetchYahooQuote('GC=F'),
+    fetchYahooQuote('CL=F'),
+    fetchSwissquoteSpot('XAU/USD'),
+    fetchSwissquoteSpot('WTI/USD')
+  ]);
+
+  const btc = btcYahoo.status === 'fulfilled' && btcYahoo.value ? btcYahoo.value : { price: 0, changePct: 0 };
+  const gY = goldYahoo.status === 'fulfilled' && goldYahoo.value ? goldYahoo.value : { price: 0, prevClose: 0, changePct: 0 };
+  const oY = oilYahoo.status === 'fulfilled' && oilYahoo.value ? oilYahoo.value : { price: 0, prevClose: 0, changePct: 0 };
+
+  const xauPrice = (goldSpot.status === 'fulfilled' && goldSpot.value) ? goldSpot.value : gY.price;
+  const xauChange = (gY.prevClose && xauPrice)
+    ? Number((((xauPrice - gY.prevClose) / gY.prevClose) * 100).toFixed(2))
+    : gY.changePct;
+
+  const xtiPrice = (oilSpot.status === 'fulfilled' && oilSpot.value) ? oilSpot.value : oY.price;
+  const xtiChange = (oY.prevClose && xtiPrice)
+    ? Number((((xtiPrice - oY.prevClose) / oY.prevClose) * 100).toFixed(2))
+    : oY.changePct;
+
+  return {
+    success: true,
+    source: 'online_realtime',
+    timestamp: Date.now(),
+    data: {
+      BTC: {
+        symbol: 'BTC',
+        price: btc.price,
+        changePct: btc.changePct
+      },
+      XAUUSD: {
+        symbol: 'XAUUSD',
+        price: xauPrice,
+        changePct: xauChange
+      },
+      XTIUSD: {
+        symbol: 'XTIUSD',
+        price: xtiPrice,
+        changePct: xtiChange
+      }
+    }
+  };
+}
+
 module.exports = {
   DEVICES,
   SCENES,
@@ -426,6 +528,7 @@ module.exports = {
   getAllStatus,
   parseVoiceCommand,
   sendTelegramSecurityAlert,
+  getRealtimeMarketPrices,
   TELEGRAM_BOT_TOKEN,
   N8N_FALLBACK_URL
 };
