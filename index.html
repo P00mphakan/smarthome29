@@ -470,10 +470,30 @@
     .devices-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr) auto;
       gap: 10px;
       flex: 1;
       min-height: 0;
+      overflow-y: auto;
+    }
+    .devices-grid::-webkit-scrollbar {
+      width: 4px;
+    }
+    .devices-grid::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+
+    /* Home Haier Scenes Pair Row */
+    .home-scenes-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .home-scenes-row .scene-tile {
+      min-height: 100px;
+      padding: 14px 16px;
     }
 
     /* Individual Device Card (Entire Card Clickable!) */
@@ -1650,7 +1670,10 @@
       }
 
       /* Grids and camera cards */
-      .devices-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; }
+      .devices-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; gap: 10px !important; }
+      #cardDoor_switch { grid-column: 1 / -1; }
+      .home-scenes-row { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .home-scenes-row .scene-tile { min-height: 90px !important; padding: 12px 14px !important; }
       .scenes-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; }
       .cctv-container { display: flex !important; flex-direction: column !important; align-items: center !important; height: auto !important; width: 100% !important; gap: 14px !important; }
       .camera-card { min-height: 280px; max-width: 100% !important; width: 100% !important; }
@@ -2147,12 +2170,12 @@
           <div class="section-title-bar">
             <div class="section-title">
               <i data-lucide="cpu" style="width: 18px; color: var(--accent-cyan);"></i>
-              <span>อุปกรณ์ควบคุม (Smart Devices)</span>
+              <span>อุปกรณ์และซีนควบคุม (Devices & Scenes)</span>
             </div>
             <div class="section-badge">กดที่ตัวการ์ดเพื่อสั่งงานทันที</div>
           </div>
 
-          <!-- 9 Device Cards (Both Card & Switch are Clickable) -->
+          <!-- 9 Device Cards + 2 Haier Smart Scenes -->
           <div class="devices-grid">
             
             <!-- 1. Bedroom -->
@@ -2270,6 +2293,27 @@
               <div class="device-bottom">
                 <div class="device-name">สวิตช์หน้าประตู</div>
                 <div class="device-desc"><span>RF 433 MHz</span><span class="status-text" id="stateDoor_switch">ปิดอยู่</span></div>
+              </div>
+            </div>
+
+            <!-- 10 & 11. Haier Smart Scenes (Air 25° & Air Off) -->
+            <div class="home-scenes-row">
+              <!-- Air Haier 25° -->
+              <div class="scene-tile scene-theme-blue" onclick="triggerSceneDirect('naAjHkYX5DYVp0m7', 'เปิดแอร์ Haier 25°', this)" title="เปิดแอร์ Haier 25°">
+                <div class="scene-icon-wrap"><i data-lucide="snowflake"></i></div>
+                <div>
+                  <div class="scene-name-text">เปิดแอร์ Haier 25°</div>
+                  <div class="scene-badge-sub">Smart Remote JBP</div>
+                </div>
+              </div>
+
+              <!-- Air Off (Haier) -->
+              <div class="scene-tile scene-theme-red" onclick="triggerSceneDirect('0A8liR6N0ZeTkUPw', 'ปิดแอร์', this)" title="ปิดแอร์ (Haier)">
+                <div class="scene-icon-wrap"><i data-lucide="power"></i></div>
+                <div>
+                  <div class="scene-name-text">ปิดแอร์ (Haier)</div>
+                  <div class="scene-badge-sub">Turn off AC</div>
+                </div>
               </div>
             </div>
 
@@ -4333,6 +4377,17 @@
       if (elem) {
         elem.classList.add('triggered');
         setTimeout(() => elem.classList.remove('triggered'), 400);
+      }
+
+      // Optimistic feedback & Toast notification
+      if (typeof showToast === 'function') {
+        if (sceneId === 'naAjHkYX5DYVp0m7') {
+          showToast('❄️ สั่งเปิดแอร์ Haier 25° เรียบร้อย');
+        } else if (sceneId === '0A8liR6N0ZeTkUPw') {
+          showToast('🔴 สั่งปิดแอร์ (Haier) เรียบร้อย');
+        } else if (sceneName) {
+          showToast(`⚡ สั่งงานซีน: ${sceneName}`);
+        }
       }
 
       // Optimistic update for fan scenes
