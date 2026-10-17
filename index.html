@@ -491,9 +491,8 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
-    .home-scenes-row .scene-tile {
-      min-height: 100px;
-      padding: 14px 16px;
+    .home-scenes-row .device-card {
+      min-height: 105px;
     }
 
     /* Individual Device Card (Entire Card Clickable!) */
@@ -1673,7 +1672,7 @@
       .devices-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; gap: 10px !important; }
       #cardDoor_switch { grid-column: 1 / -1; }
       .home-scenes-row { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-      .home-scenes-row .scene-tile { min-height: 90px !important; padding: 12px 14px !important; }
+      .home-scenes-row .device-card { min-height: 90px !important; padding: 12px 14px !important; }
       .scenes-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; height: auto; }
       .cctv-container { display: flex !important; flex-direction: column !important; align-items: center !important; height: auto !important; width: 100% !important; gap: 14px !important; }
       .camera-card { min-height: 280px; max-width: 100% !important; width: 100% !important; }
@@ -2296,23 +2295,29 @@
               </div>
             </div>
 
-            <!-- 10 & 11. Haier Smart Scenes (Air 25° & Air Off) -->
+            <!-- 10 & 11. Haier Smart AC Switches (Air 25° & Air Off) -->
             <div class="home-scenes-row">
-              <!-- Air Haier 25° -->
-              <div class="scene-tile scene-theme-blue" onclick="triggerSceneDirect('naAjHkYX5DYVp0m7', 'เปิดแอร์ Haier 25°', this)" title="เปิดแอร์ Haier 25°">
-                <div class="scene-icon-wrap"><i data-lucide="snowflake"></i></div>
-                <div>
-                  <div class="scene-name-text">เปิดแอร์ Haier 25°</div>
-                  <div class="scene-badge-sub">Smart Remote JBP</div>
+              <!-- 10. Air Haier 25° (Turn On) -->
+              <div class="device-card" id="cardAir_on" onclick="handleAirCardClick('on', event)">
+                <div class="device-top">
+                  <div class="device-icon"><i data-lucide="snowflake"></i></div>
+                  <div class="toggle-switch" onclick="handleAirSwitchClick('on', event)"></div>
+                </div>
+                <div class="device-bottom">
+                  <div class="device-name">เปิดแอร์ Haier 25°</div>
+                  <div class="device-desc"><span>Smart Remote JBP</span><span class="status-text" id="stateAir_on">ปิดอยู่</span></div>
                 </div>
               </div>
 
-              <!-- Air Off (Haier) -->
-              <div class="scene-tile scene-theme-red" onclick="triggerSceneDirect('0A8liR6N0ZeTkUPw', 'ปิดแอร์', this)" title="ปิดแอร์ (Haier)">
-                <div class="scene-icon-wrap"><i data-lucide="power"></i></div>
-                <div>
-                  <div class="scene-name-text">ปิดแอร์ (Haier)</div>
-                  <div class="scene-badge-sub">Turn off AC</div>
+              <!-- 11. Air Haier Off (Turn Off) -->
+              <div class="device-card" id="cardAir_off" onclick="handleAirCardClick('off', event)">
+                <div class="device-top">
+                  <div class="device-icon"><i data-lucide="power"></i></div>
+                  <div class="toggle-switch" onclick="handleAirSwitchClick('off', event)"></div>
+                </div>
+                <div class="device-bottom">
+                  <div class="device-name">ปิดแอร์ (Haier)</div>
+                  <div class="device-desc"><span>Turn off AC</span><span class="status-text" id="stateAir_off">ปิดอยู่</span></div>
                 </div>
               </div>
             </div>
@@ -3175,7 +3180,8 @@
     const states = {
       bedroom: false, kitchen: false, outdoor: false,
       living_room: false, small_room: false, tv: false,
-      fan: false, ev_meter: false, door_switch: false
+      fan: false, ev_meter: false, door_switch: false,
+      air: false
     };
 
     // ----------------------------------------------------
@@ -4357,6 +4363,51 @@
       handleFanCardClick(event);
     }
 
+    function handleAirCardClick(action, event) {
+      if (action === 'on') {
+        const nextState = !states.air;
+        updateAirCardUI(nextState);
+        if (nextState) {
+          triggerSceneDirect('naAjHkYX5DYVp0m7', 'เปิดแอร์ Haier 25°');
+        } else {
+          triggerSceneDirect('0A8liR6N0ZeTkUPw', 'ปิดแอร์');
+        }
+      } else if (action === 'off') {
+        updateAirCardUI(false, true);
+        triggerSceneDirect('0A8liR6N0ZeTkUPw', 'ปิดแอร์');
+      }
+    }
+
+    function handleAirSwitchClick(action, event) {
+      if (event) event.stopPropagation();
+      handleAirCardClick(action, event);
+    }
+
+    function updateAirCardUI(isActive, isExplicitOffClick = false) {
+      states.air = isActive;
+      const cardOn = document.getElementById('cardAir_on');
+      const stateOn = document.getElementById('stateAir_on');
+      const cardOff = document.getElementById('cardAir_off');
+      const stateOff = document.getElementById('stateAir_off');
+
+      if (cardOn) cardOn.classList.toggle('active', isActive);
+      if (stateOn) stateOn.textContent = isActive ? 'เปิดอยู่' : 'ปิดอยู่';
+
+      if (cardOff) {
+        if (isExplicitOffClick) {
+          cardOff.classList.add('active');
+          if (stateOff) stateOff.textContent = 'สั่งปิดแล้ว';
+          setTimeout(() => {
+            cardOff.classList.remove('active');
+            if (stateOff) stateOff.textContent = 'ปิดอยู่';
+          }, 800);
+        } else {
+          cardOff.classList.remove('active');
+          if (stateOff) stateOff.textContent = 'ปิดอยู่';
+        }
+      }
+    }
+
     function updateDeviceCardUI(key, isActive) {
       states[key] = isActive;
       const formattedKey = key.charAt(0).toUpperCase() + key.slice(1);
@@ -4388,6 +4439,13 @@
         } else if (sceneName) {
           showToast(`⚡ สั่งงานซีน: ${sceneName}`);
         }
+      }
+
+      // Optimistic update for air scenes
+      if (sceneId === 'naAjHkYX5DYVp0m7' || sceneId === 'XrRz80YEKHf3IQJa') {
+        updateAirCardUI(true);
+      } else if (sceneId === '0A8liR6N0ZeTkUPw') {
+        updateAirCardUI(false);
       }
 
       // Optimistic update for fan scenes
